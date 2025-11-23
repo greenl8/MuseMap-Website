@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { TransformWrapper, TransformComponent, useControls } from 'react-zoom-pan-pinch';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, animate } from 'framer-motion';
 import type { DiscographyData } from '../types';
@@ -13,8 +13,8 @@ interface Props {
 const SpringLine: React.FC<{
   x1: number;
   y1: number;
-  x2: number;
-  y2: number;
+  x2: number | ReturnType<typeof useMotionValue>;
+  y2: number | ReturnType<typeof useMotionValue>;
   stroke: string;
   strokeWidth: number;
   opacity: number;
@@ -22,9 +22,13 @@ const SpringLine: React.FC<{
   delay: number;
   index: number;
 }> = ({ x1, y1, x2, y2, stroke, strokeWidth, opacity, filter, delay, index }) => {
+  // Get initial values
+  const initialX = typeof x2 === 'number' ? x2 : x2.get();
+  const initialY = typeof y2 === 'number' ? y2 : y2.get();
+  
   // Create motion values with spring physics
-  const springX = useMotionValue(x2);
-  const springY = useMotionValue(y2);
+  const springX = useMotionValue(initialX);
+  const springY = useMotionValue(initialY);
   const springXAnimated = useSpring(springX, { 
     stiffness: 30 + index * 2, 
     damping: 10 + index * 0.4, 
@@ -38,9 +42,26 @@ const SpringLine: React.FC<{
 
   // Update spring targets when coordinates change
   useEffect(() => {
-    springX.set(x2);
-    springY.set(y2);
-  }, [x2, y2, springX, springY]);
+    if (typeof x2 === 'number') {
+      springX.set(x2);
+    } else {
+      const unsubscribe = x2.on('change', (latest) => {
+        springX.set(latest);
+      });
+      return unsubscribe;
+    }
+  }, [x2, springX]);
+  
+  useEffect(() => {
+    if (typeof y2 === 'number') {
+      springY.set(y2);
+    } else {
+      const unsubscribe = y2.on('change', (latest) => {
+        springY.set(latest);
+      });
+      return unsubscribe;
+    }
+  }, [y2, springY]);
 
   // Create path string from spring values
   const pathString = useTransform(
@@ -69,29 +90,276 @@ const SpringLine: React.FC<{
   );
 };
 
+const ConnectionLine: React.FC<{
+  item: DiscographyData;
+  index: number;
+  dataLength: number;
+  radiusMotion: any; // MotionValue
+  getYearColor: (year: number) => { from: string; to: string; glow: string };
+  isHovered: boolean;
+}> = ({ item, index, dataLength, radiusMotion, getYearColor, isHovered }) => {
+  const angle = (index / dataLength) * 2 * Math.PI - (Math.PI / 2);
+  const yearColors = getYearColor(item.year);
+  
+  // Calculate animated positions from radius motion value
+  const animatedX = useTransform(radiusMotion, (r: number) => 700 + r * Math.cos(angle));
+  const animatedY = useTransform(radiusMotion, (r: number) => 700 + r * Math.sin(angle));
+
+  return (
+    <SpringLine
+      key={`line-${item.year}`}
+      x1={700}
+      y1={700}
+      x2={animatedX}
+      y2={animatedY}
+      stroke={yearColors.from}
+      strokeWidth={isHovered ? 3 : 2.5}
+      opacity={isHovered ? 0.9 : 0.7}
+      filter="url(#glow)"
+      delay={index * 0.05}
+      index={index}
+    />
+  );
+};
+
+const YearNode: React.FC<{
+  item: DiscographyData;
+  index: number;
+  dataLength: number;
+  radiusMotion: any; // MotionValue
+  getYearColor: (year: number) => { from: string; to: string; glow: string };
+  getAlbumCount: (yearData: DiscographyData) => number;
+  getCircleSizeAndGlow: (albumCount: number) => { size: number; glowColor: string };
+  handleYearClick: (e: React.MouseEvent, item: DiscographyData) => void;
+  isHovered: boolean;
+  setHoveredYear: (year: number | null) => void;
+}> = ({ 
+  item, index, dataLength, radiusMotion, 
+  getYearColor, getAlbumCount, getCircleSizeAndGlow,
+  handleYearClick, isHovered, setHoveredYear
+}) => {
+  const angle = (index / dataLength) * 2 * Math.PI - (Math.PI / 2);
+  const hasAlbums = item.albums.length > 0;
+  const yearColors = getYearColor(item.year);
+  const albumCount = getAlbumCount(item);
+  const { size, glowColor } = getCircleSizeAndGlow(albumCount);
+
+  // Calculate position based on animated radius
+  const left = useTransform(radiusMotion, (r: number) => 700 + r * Math.cos(angle));
+  const top = useTransform(radiusMotion, (r: number) => 700 + r * Math.sin(angle));
+
+  return (
+    <motion.div
+      className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20"
+      style={{ 
+        left, 
+        top,
+      }}
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ 
+        scale: 1,
+        opacity: 1,
+      }}
+      transition={{ 
+        delay: index * 0.08,
+        type: "spring",
+        damping: 12,
+        stiffness: 200,
+      }}
+      onMouseEnter={() => setHoveredYear(item.year)}
+      onMouseLeave={() => setHoveredYear(null)}
+      onClick={(e) => handleYearClick(e, item)}
+    >
+      {/* Use CSS for hover scale to avoid React state re-render issues interfering with motion values */}
+      <div className="hover-scale-wrapper circle-scale-in"
+           style={{ 
+             transformOrigin: 'center',
+             animationDelay: `${index * 0.08}s`,
+           }}>
+        {/* Outer glow - dynamic color based on track count */}
+        <div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: `radial-gradient(circle, ${isHovered ? glowColor.replace(/0\.\d+/, '0.8') : glowColor} 0%, transparent 70%)`,
+            filter: 'blur(20px)',
+            width: `${size * 1.5}px`,
+            height: `${size * 1.5}px`,
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+          }}
+        />
+
+        {/* Main node - with year-based color gradient and dynamic size */}
+        <div
+          className="relative rounded-full flex items-center justify-center overflow-hidden"
+          style={{
+            width: `${size}px`,
+            height: `${size}px`,
+            background: `linear-gradient(135deg, ${yearColors.from} 0%, ${yearColors.to} 100%)`,
+            boxShadow: isHovered 
+              ? `0 0 ${size * 0.3}px ${glowColor}, inset 0 0 ${size * 0.15}px rgba(255, 255, 255, 0.2)`
+              : `0 0 ${size * 0.2}px ${glowColor}, inset 0 0 ${size * 0.1}px rgba(255, 255, 255, 0.1)`,
+            border: `2px solid ${isHovered ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.2)'}`,
+            opacity: hasAlbums ? 1 : 0.7,
+          }}
+        >
+          <span className="text-white font-bold relative z-10"
+            style={{ 
+              textShadow: '0 0 8px rgba(255, 255, 255, 0.5)',
+              fontSize: `${size * 0.35}px`,
+            }}
+          >
+            {item.year}
+          </span>
+        </div>
+
+        {/* Hover tooltip */}
+        <AnimatePresence>
+          {isHovered && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="absolute top-full mt-4 left-1/2 transform -translate-x-1/2 whitespace-nowrap pointer-events-none"
+            >
+              <div 
+                className="backdrop-blur-md px-4 py-2 rounded-lg border border-white/20 shadow-xl"
+                style={{ 
+                  background: `linear-gradient(to right, ${yearColors.from}dd, ${yearColors.to}dd)`,
+                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)' 
+                }}
+              >
+                <div className="text-white font-semibold text-sm">
+                  {item.albums.length} {item.albums.length === 1 ? 'Album' : 'Albums'}
+                </div>
+                <div className="text-white/80 text-xs mt-1">{item.description}</div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+};
+
+// Component to manage animation for a single year group
+const YearGroup: React.FC<{
+  item: DiscographyData;
+  index: number;
+  dataLength: number;
+  getYearRadius: (year: number) => number;
+  getYearColor: (year: number) => { from: string; to: string; glow: string };
+  getAlbumCount: (yearData: DiscographyData) => number;
+  getCircleSizeAndGlow: (albumCount: number) => { size: number; glowColor: string };
+  handleYearClick: (e: React.MouseEvent, item: DiscographyData) => void;
+  isHovered: boolean;
+  setHoveredYear: (year: number | null) => void;
+}> = ({ 
+  item, index, dataLength, getYearRadius, 
+  getYearColor, getAlbumCount, getCircleSizeAndGlow,
+  handleYearClick, isHovered, setHoveredYear 
+}) => {
+  const baseRadius = getYearRadius(item.year);
+  const radiusMotion = useMotionValue(baseRadius);
+
+  useEffect(() => {
+    const animation = animate(
+      radiusMotion,
+      [baseRadius, baseRadius + 80, baseRadius],
+      {
+        duration: 4 + index * 0.3,
+        repeat: Infinity,
+        ease: "easeInOut",
+        delay: index * 0.2,
+      }
+    );
+    
+    return () => animation.stop();
+  }, [baseRadius, index, radiusMotion]);
+
+  // We render the SVG line inside a portal-like SVG container, but actually
+  // we can just render an absolute SVG for THIS specific line right here.
+  // This avoids any complexity with parent SVGs.
+  
+  return (
+    <>
+      {/* Connection Line in its own absolute SVG */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible z-25">
+        <defs>
+            {/* We need the glow filter here if it's not global. 
+                Actually, let's rely on the parent SVG having the filter if we were using it, 
+                but since we are creating a NEW SVG, we need the filter here OR make the filter global.
+                Ideally, filters should be in the DOM once.
+                The parent SpiderDiagramContent puts filters in a 0-size SVG? 
+            */}
+        </defs>
+        <ConnectionLine
+          item={item}
+          index={index}
+          dataLength={dataLength}
+          radiusMotion={radiusMotion}
+          getYearColor={getYearColor}
+          isHovered={isHovered}
+        />
+      </svg>
+      
+      <YearNode
+        item={item}
+        index={index}
+        dataLength={dataLength}
+        radiusMotion={radiusMotion}
+        getYearColor={getYearColor}
+        getAlbumCount={getAlbumCount}
+        getCircleSizeAndGlow={getCircleSizeAndGlow}
+        handleYearClick={handleYearClick}
+        isHovered={isHovered}
+        setHoveredYear={setHoveredYear}
+      />
+    </>
+  );
+};
+
 const SpiderDiagramContent: React.FC<{ data: DiscographyData[]; onYearSelect: (year: DiscographyData) => void }> = ({ data, onYearSelect }) => {
   const { zoomToElement } = useControls();
   const [hoveredYear, setHoveredYear] = useState<number | null>(null);
-
-  // Calculate total tracks for each year
-  const getTrackCount = (yearData: DiscographyData): number => {
-    return yearData.albums.reduce((total, album) => total + album.songs.length, 0);
+  
+  // Function to get radius for each year based on position (red circles indicate different distances)
+  const getYearRadius = (year: number): number => {
+    // Years with red circles (different positions): 2016, 2018, 2020, 2022, 2023, 2024, 2025
+    // Years without red circles (standard position): 2015, 2017, 2019, 2021
+    const radiusMap: { [key: number]: number } = {
+      2015: 500,  // Standard position
+      2016: 600,  // Red circle - further out
+      2017: 500,  // Standard position
+      2018: 550,  // Red circle - medium distance
+      2019: 500,  // Standard position
+      2020: 650,  // Red circle - furthest out
+      2021: 500,  // Standard position
+      2022: 580,  // Red circle - medium-far
+      2023: 520,  // Red circle - slightly further
+      2024: 620,  // Red circle - far out
+      2025: 570,  // Red circle - medium-far
+    };
+    
+    return radiusMap[year] || 500; // Default to 500 if year not in map
   };
 
-  // Calculate min and max track counts for normalization
-  const trackCounts = data.map(getTrackCount);
-  const minTracks = Math.min(...trackCounts, 1); // At least 1 to avoid division by zero
-  const maxTracks = Math.max(...trackCounts, 1);
+  // Calculate album count for each year
+  const getAlbumCount = (yearData: DiscographyData): number => {
+    return yearData.albums.length;
+  };
+
+  // Calculate min and max album counts for normalization
+  const albumCounts = data.map(getAlbumCount);
+  const minAlbums = Math.min(...albumCounts, 1); // At least 1 to avoid division by zero
+  const maxAlbums = Math.max(...albumCounts, 1);
 
   // Function to get color based on year (2025 = light green, 2015 = blue)
   const getYearColor = (year: number): { from: string; to: string; glow: string } => {
     const minYear = 2015;
     const maxYear = 2025;
     const normalized = (year - minYear) / (maxYear - minYear); // 0 to 1
-    
-    // Interpolate between blue (2015) and light green (2025)
-    // Blue: #3b82f6 (rgb(59, 130, 246))
-    // Light Green: #4ade80 (rgb(74, 222, 128))
     
     const r = Math.round(59 + (74 - 59) * normalized);
     const g = Math.round(130 + (222 - 130) * normalized);
@@ -107,26 +375,22 @@ const SpiderDiagramContent: React.FC<{ data: DiscographyData[]; onYearSelect: (y
     };
   };
 
-  // Function to get circle size and glow color based on track count
-  const getCircleSizeAndGlow = (trackCount: number): { size: number; glowColor: string } => {
-    // Normalize track count (0 to 1)
-    const normalized = maxTracks > minTracks 
-      ? (trackCount - minTracks) / (maxTracks - minTracks)
+  // Function to get circle size and glow color based on album count
+  const getCircleSizeAndGlow = (albumCount: number): { size: number; glowColor: string } => {
+    // Normalize album count (0 to 1)
+    const normalized = maxAlbums > minAlbums 
+      ? (albumCount - minAlbums) / (maxAlbums - minAlbums)
       : 0.5;
     
     // Size ranges from 80px (small) to 140px (large)
     const size = 80 + (normalized * 60);
     
-    // Glow color: yellow for bigger (high normalized), purple for smaller (low normalized)
-    // Yellow: rgba(234, 179, 8, ...) - amber/yellow
-    // Purple: rgba(168, 85, 247, ...) - purple
-    const yellowIntensity = normalized;
-    const purpleIntensity = 1 - normalized;
+    // Glow color: light blue for more albums (high normalized), light green for fewer albums (low normalized)
+    const blueIntensity = normalized;
     
-    // Blend yellow and purple based on size
-    const r = Math.round(168 + (234 - 168) * yellowIntensity);
-    const g = Math.round(85 + (179 - 85) * yellowIntensity);
-    const b = Math.round(247 + (8 - 247) * yellowIntensity);
+    const r = Math.round(134 + (96 - 134) * blueIntensity);
+    const g = Math.round(239 + (165 - 239) * blueIntensity);
+    const b = Math.round(172 + (250 - 172) * blueIntensity);
     
     const glowColor = `rgba(${r}, ${g}, ${b}, ${0.4 + normalized * 0.4})`;
     
@@ -146,7 +410,6 @@ const SpiderDiagramContent: React.FC<{ data: DiscographyData[]; onYearSelect: (y
 
   return (
     <>
-
       {/* Main Diagram Container */}
       <div className="relative w-[1400px] h-[1400px] flex-shrink-0">
         
@@ -183,16 +446,9 @@ const SpiderDiagramContent: React.FC<{ data: DiscographyData[]; onYearSelect: (y
           </div>
         </motion.div>
 
-        {/* Animated Connections - Rendered AFTER artist node so lines appear on top */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible z-25">
+        {/* Shared Filters (must be rendered somewhere) */}
+        <svg className="absolute inset-0 w-0 h-0 pointer-events-none">
           <defs>
-            <linearGradient id="line-gradient-creative" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#a855f7" stopOpacity="0.8" />
-              <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.6" />
-              <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.4" />
-            </linearGradient>
-            
-            {/* Glow filter for connections */}
             <filter id="glow">
               <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
               <feMerge>
@@ -200,142 +456,24 @@ const SpiderDiagramContent: React.FC<{ data: DiscographyData[]; onYearSelect: (y
                 <feMergeNode in="SourceGraphic"/>
               </feMerge>
             </filter>
-
-            {/* Animated gradient for pulsing effect */}
-            <linearGradient id="pulse-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#a855f7" stopOpacity="0.6">
-                <animate attributeName="stop-opacity" values="0.3;0.8;0.3" dur="3s" repeatCount="indefinite" />
-              </stop>
-              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.4">
-                <animate attributeName="stop-opacity" values="0.2;0.6;0.2" dur="3s" repeatCount="indefinite" />
-              </stop>
-            </linearGradient>
           </defs>
-          
-          {data.map((item, index) => {
-            const angle = (index / data.length) * 2 * Math.PI - (Math.PI / 2);
-            const radius = 500; 
-            const baseCx = 700 + radius * Math.cos(angle);
-            const baseCy = 700 + radius * Math.sin(angle);
-            const isHovered = hoveredYear === item.year;
-            const yearColors = getYearColor(item.year);
-
-            return (
-              <SpringLine
-                key={`line-${item.year}`}
-                x1={700}
-                y1={700}
-                x2={baseCx}
-                y2={baseCy}
-                stroke={yearColors.from}
-                strokeWidth={isHovered ? 3 : 2.5}
-                opacity={isHovered ? 0.9 : 0.7}
-                filter="url(#glow)"
-                delay={index * 0.05}
-                index={index}
-              />
-            );
-          })}
         </svg>
 
-        {/* Year Nodes - Creative Organic Design */}
-        {data.map((item, index) => {
-          const angle = (index / data.length) * 2 * Math.PI - (Math.PI / 2);
-          const radius = 500;
-          const left = 700 + radius * Math.cos(angle);
-          const top = 700 + radius * Math.sin(angle);
-          const isHovered = hoveredYear === item.year;
-          const hasAlbums = item.albums.length > 0;
-          const yearColors = getYearColor(item.year);
-          const trackCount = getTrackCount(item);
-          const { size, glowColor } = getCircleSizeAndGlow(trackCount);
-
-          return (
-            <motion.div
-              key={item.year}
-              className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20"
-              style={{ left, top }}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ 
-                scale: 1, 
-                opacity: 1,
-                scale: isHovered ? 1.15 : 1,
-              }}
-              transition={{ 
-                delay: index * 0.08,
-                type: "spring",
-                damping: 12,
-                stiffness: 200,
-              }}
-              onMouseEnter={() => setHoveredYear(item.year)}
-              onMouseLeave={() => setHoveredYear(null)}
-              onClick={(e) => handleYearClick(e, item)}
-            >
-              {/* Outer glow - dynamic color based on track count */}
-              <div
-                className="absolute inset-0 rounded-full"
-                style={{
-                  background: `radial-gradient(circle, ${isHovered ? glowColor.replace(/0\.\d+/, '0.8') : glowColor} 0%, transparent 70%)`,
-                  filter: 'blur(20px)',
-                  width: `${size * 1.5}px`,
-                  height: `${size * 1.5}px`,
-                  left: '50%',
-                  top: '50%',
-                  transform: 'translate(-50%, -50%)',
-                }}
-              />
-
-              {/* Main node - with year-based color gradient and dynamic size */}
-              <div
-                className="relative rounded-full flex items-center justify-center overflow-hidden"
-                style={{
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  background: `linear-gradient(135deg, ${yearColors.from} 0%, ${yearColors.to} 100%)`,
-                  boxShadow: isHovered 
-                    ? `0 0 ${size * 0.3}px ${glowColor}, inset 0 0 ${size * 0.15}px rgba(255, 255, 255, 0.2)`
-                    : `0 0 ${size * 0.2}px ${glowColor}, inset 0 0 ${size * 0.1}px rgba(255, 255, 255, 0.1)`,
-                  border: `2px solid ${isHovered ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.2)'}`,
-                  opacity: hasAlbums ? 1 : 0.7,
-                }}
-              >
-                <span className="text-white font-bold relative z-10"
-                  style={{ 
-                    textShadow: '0 0 8px rgba(255, 255, 255, 0.5)',
-                    fontSize: `${size * 0.35}px`,
-                  }}
-                >
-                  {item.year}
-                </span>
-              </div>
-
-              {/* Hover tooltip */}
-              <AnimatePresence>
-                {isHovered && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full mt-4 left-1/2 transform -translate-x-1/2 whitespace-nowrap pointer-events-none"
-                  >
-                    <div 
-                      className="backdrop-blur-md px-4 py-2 rounded-lg border border-white/20 shadow-xl"
-                      style={{ 
-                        background: `linear-gradient(to right, ${yearColors.from}dd, ${yearColors.to}dd)`,
-                        textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)' 
-                      }}
-                    >
-                      <div className="text-white font-semibold text-sm">
-                        {item.albums.length} {item.albums.length === 1 ? 'Album' : 'Albums'}
-                      </div>
-                      <div className="text-white/80 text-xs mt-1">{item.description}</div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          );
-        })}
+        {data.map((item, index) => (
+          <YearGroup
+            key={item.year}
+            item={item}
+            index={index}
+            dataLength={data.length}
+            getYearRadius={getYearRadius}
+            getYearColor={getYearColor}
+            getAlbumCount={getAlbumCount}
+            getCircleSizeAndGlow={getCircleSizeAndGlow}
+            handleYearClick={handleYearClick}
+            isHovered={hoveredYear === item.year}
+            setHoveredYear={setHoveredYear}
+          />
+        ))}
       </div>
     </>
   );
