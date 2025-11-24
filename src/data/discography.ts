@@ -244,6 +244,24 @@ export const discography: DiscographyData[] = [
           { id: '2016-song-91', title: 'Lost in the forest', youtubeId: 'qgc4BG_NK4Q' },
           { id: '2016-song-92', title: 'Falsehood', youtubeId: 'Ay1E07rc3oE' },
         ]
+      },
+      {
+        id: '2016-album-10',
+        title: "Abstract Selection Vol 1",
+        artist: "Purple Calx",
+        coverUrl: "", // Cover art - add if available
+        songs: [
+          { id: '2016-song-93', title: '4th gen #', youtubeId: 'B1iUowtokQ4' },
+          { id: '2016-song-94', title: '5th density', youtubeId: 'owpVQXKdc1A' },
+          { id: '2016-song-95', title: 'feedbaccy', youtubeId: 'Umd49OWar-8' },
+          { id: '2016-song-96', title: 'first on wheels', youtubeId: 'u9bUbHCW8Fk' },
+          { id: '2016-song-97', title: 'head radio', youtubeId: 'RnKdHzk9KWc' },
+          { id: '2016-song-98', title: 'green mint tins pitch shifted', youtubeId: 'AGmSlM_h4pE' },
+          { id: '2016-song-99', title: 'like me alone bedrrom ensemble', youtubeId: 'qkD7Bga7MM0' },
+          { id: '2016-song-100', title: 'new moon new skool', youtubeId: '_aTR0Sa-e1c' },
+          { id: '2016-song-101', title: 'sanskit', youtubeId: 'cYHmxnh7ltM' },
+          { id: '2016-song-102', title: 'solfeggio', youtubeId: 'nl8-SzRA3vA' },
+        ]
       }
     ]
   },
@@ -257,10 +275,156 @@ export const discography: DiscographyData[] = [
     albums: [
       {
         id: '2017-album-1',
-        title: "New Horizons",
-        coverUrl: "", // Optional: URL to album cover image
+        title: "Development",
+        artist: "Human",
+        coverUrl: "",
         songs: [
-          { id: '2017-song-1', title: 'New Horizons', youtubeId: 'dQw4w9WgXcQ' },
+          { id: '2017-dev-1', title: 'Superego2', youtubeId: 'lkWSiSvmcRI' },
+          { id: '2017-dev-2', title: 'rackwidth medicene', youtubeId: 'sW5IaG_M5As' },
+          { id: '2017-dev-3', title: 'Pocket Jazz', youtubeId: '8TCZW22OSpU' },
+          { id: '2017-dev-4', title: 'ego master', youtubeId: 'KitFtmj5q24' },
+          { id: '2017-dev-5', title: '1320 regression# master', youtubeId: 'iBaCOhhJ2qI' },
+          { id: '2017-dev-6', title: '46y nrgn Re master', youtubeId: 'nYVCBA7oZWU' },
+          { id: '2017-dev-7', title: '46y nrgn Drop Mix', youtubeId: 'q6XKWXYVQWQ' },
+          { id: '2017-dev-8', title: 'teth', youtubeId: 'X8ymddt8RqI' },
+          { id: '2017-dev-9', title: 'tehtered', youtubeId: 'xd43_KEtCk0' },
+        ]
+      },
+      {
+        id: '2017-album-2',
+        title: "Me and My Sanity",
+        artist: "Human",
+        coverUrl: "",
+        songs: [
+          { id: '2017-sanity-1', title: 'My Word Master', youtubeId: 'M67TQZjaag0' },
+          { id: '2017-sanity-2', title: 'ruin#eg', youtubeId: 'w7wWYO6W5E8' },
+          { id: '2017-sanity-3', title: 'VENUA AND MARR master', youtubeId: 'IufTrvJe5o8' },
+          { id: '2017-sanity-4', title: 'dipping sTrun spikes', youtubeId: 'v1qhamHRUWY' },
+          { id: '2017-sanity-5', title: 'Rushing omar Master', youtubeId: 'ftIsM7rqeos' },
+          { id: '2017-sanity-6', title: 'dipping pipes 63', youtubeId: 'CoshFrP3D4I' },
+          { id: '2017-sanity-7', title: 'Sipping SpikesMaster', youtubeId: 'yIFrk0nMpL4' },
+          { id: '2017-sanity-8', title: 'taken from my soul', youtubeId: 'xQcMdZMMcls' },
+          { id: '2017-sanity-9', title: 'Elsethia', youtubeId: 'mvQb7Vf_6GU' },
+          { id: '2017-sanity-10', title: 'crystal teardrop', youtubeId: 'lxznnyY1JfA' },
+          { id: '2017-sanity-11', title: 'me and the guy', youtubeId: 'AQQAu5mW080' },
+          { id: '2017-sanity-12', title: 'Childlike mind', youtubeId: 'Un1ojWY9atc' },
+          { id: '2017-sanity-13', title: '愛', youtubeId: 'v1DeLyczaOs' },
+        ]
+      },
+      {
+        id: '2017-album-3',
+        title: "Originals",
+        artist: "Human",
+        coverUrl: "",
+        songs: [
+          { id: '2017-orig-1', title: 'Dear Me master', youtubeId: 's4hhHZvQli4' },
+          { id: '2017-orig-2', title: 'My Word Master', youtubeId: 'pSy4AEiq9VA' },
+          { id: '2017-orig-3', title: 'pheanl cubix rl master', youtubeId: 'Au9G6R0L-qU' },
+          { id: '2017-orig-4', title: 'Phase1 building master', youtubeId: 'y7pQjgqpP6c' },
+          { id: '2017-orig-5', title: 'Patent Morse master', youtubeId: 'WKevMZT_PNQ' },
+          { id: '2017-orig-6', title: 'Rushing omar Master', youtubeId: 'oVHb3mT8g6g' },
+          { id: '2017-orig-7', title: 'Sipping SpikesMaster', youtubeId: 'ogBBlmqtimE' },
+          { id: '2017-orig-8', title: 'Song of the dead master', youtubeId: '7XAdEo43Ank' },
+          { id: '2017-orig-9', title: 'Transhuman master', youtubeId: 'M4AUkZdEUmU' },
+          { id: '2017-orig-10', title: 'Transhuman2 master', youtubeId: 'upzAk652SNQ' },
+          { id: '2017-orig-11', title: 'VENUA AND MARR master', youtubeId: 'e_sDP-biFdc' },
+          { id: '2017-orig-12', title: 'Velocive RE master', youtubeId: 'I4rJiR4wEdI' },
+        ]
+      },
+      {
+        id: '2017-album-4',
+        title: "Second Gen",
+        artist: "Human",
+        coverUrl: "",
+        songs: [
+          { id: '2017-sec-1', title: 'Donald Marshall', youtubeId: 'm-c6XcTBUQ4' },
+          { id: '2017-sec-2', title: 'Heaven Forgiven', youtubeId: 'oxzZ3tzTM9U' },
+          { id: '2017-sec-3', title: 'Jarred', youtubeId: 'XoRfA-ipNwM' },
+          { id: '2017-sec-4', title: 'Low Vibrational Friend mastered', youtubeId: 'MzRei_fFPYo' },
+          { id: '2017-sec-5', title: 'Routine Mastered', youtubeId: 'RYrjFhR4gTw' },
+          { id: '2017-sec-6', title: 'Thought Motion', youtubeId: 'r8eoVTYxNtg' },
+          { id: '2017-sec-7', title: 'Terms#', youtubeId: 'W0COT0M0TvI' },
+          { id: '2017-sec-8', title: 'TownScales mastered', youtubeId: 'PLopi2DI02E' },
+        ]
+      },
+      {
+        id: '2017-album-5',
+        title: "Demos",
+        artist: "Purple Calx",
+        coverUrl: "",
+        songs: [
+          { id: '2017-demos-1', title: 'setters pt4', youtubeId: 'Njh1KVGFE4E' },
+          { id: '2017-demos-2', title: 'jaded line', youtubeId: 'r6PhsoCngj0' },
+        ]
+      },
+      {
+        id: '2017-album-6',
+        title: "Et Seriene",
+        artist: "Purple Calx",
+        coverUrl: "",
+        songs: [
+          { id: '2017-et-1', title: 'Et Seriene', youtubeId: 'MARE64z6IQI' },
+          { id: '2017-et-2', title: 'setters pt5', youtubeId: 'p6tcbrRV-lU' },
+          { id: '2017-et-3', title: '1307 regulate', youtubeId: 'U17TP8un76Q' },
+          { id: '2017-et-4', title: 'dn1', youtubeId: '0w41f44P3AU' },
+          { id: '2017-et-5', title: 'FGZC', youtubeId: '4bjEqcqubpo' },
+          { id: '2017-et-6', title: 'pr 8079', youtubeId: 'WOTwmicdnlY' },
+          { id: '2017-et-7', title: 'jaded line', youtubeId: 'mSOZ2LacqHI' },
+          { id: '2017-et-8', title: '46y nrgn', youtubeId: '6WK2OG4aJdY' },
+          { id: '2017-et-9', title: 'pentagon wave', youtubeId: 'VgtiAa5xN64' },
+          { id: '2017-et-10', title: 'yausi lounge arrragement', youtubeId: 'YT-bn4-NPnE' },
+        ]
+      },
+      {
+        id: '2017-album-7',
+        title: "Rewenge 432 EP",
+        artist: "Rewenge",
+        coverUrl: "",
+        songs: [
+          { id: '2017-rew-1', title: 'Falsehood', youtubeId: 'iPyOi5ufzlk' },
+          { id: '2017-rew-2', title: 'Spiral Eyes', youtubeId: 'pV5vrX98p4A' },
+          { id: '2017-rew-3', title: 'Monkeys on The HIll', youtubeId: 'w2ElaY8ObFI' },
+          { id: '2017-rew-4', title: 'Lost In The Forest', youtubeId: 'PxDP_gLjHQ8' },
+          { id: '2017-rew-5', title: 'Rewenge 432', youtubeId: '9yoo8qQXPwQ' },
+          { id: '2017-rew-6', title: 'Remove Your Feet', youtubeId: '_SDDs3CL-S0' },
+          { id: '2017-rew-7', title: 'Lost In The weird music', youtubeId: 'CxalHQrsVUU' },
+        ]
+      },
+      {
+        id: '2017-album-8',
+        title: "misc recording",
+        coverUrl: "",
+        songs: [
+          { id: '2017-misc-1', title: '1996', youtubeId: 'uzAeW_gbY0k' },
+          { id: '2017-misc-2', title: 'Hypogognac Friend 432', youtubeId: 'T947-t-NIVw' },
+          { id: '2017-misc-3', title: 'Its just the truth', youtubeId: 'JA0rIOtnhco' },
+          { id: '2017-misc-4', title: 'made a stand', youtubeId: 'vQ90EZa6CMw' },
+          { id: '2017-misc-5', title: 'monkeys on the hill band mix', youtubeId: '4ZPgNhRI85s' },
+          { id: '2017-misc-6', title: 'my ps3', youtubeId: 'bqFno1FQxH8' },
+          { id: '2017-misc-7', title: 'Recently Wired sober mix', youtubeId: 'f25n_oN8qSk' },
+          { id: '2017-misc-8', title: 'reanalyse the avenues 432', youtubeId: 'PmVW5U8EhuA' },
+          { id: '2017-misc-9', title: 'rzorblade to your hed', youtubeId: 'NoeOZH0W1a4' },
+          { id: '2017-misc-10', title: 'x3ug#', youtubeId: 'jzIVoDzSdwk' },
+        ]
+      },
+      {
+        id: '2017-album-9',
+        title: "music for djing",
+        coverUrl: "",
+        songs: [
+          { id: '2017-dj-1', title: '6 Lies 127bpm Electronica', youtubeId: 'y4p1y4OWfxY' },
+          { id: '2017-dj-2', title: 'Brickwall 147bpm Electronica', youtubeId: 'SpqbSqJhRkw' },
+          { id: '2017-dj-3', title: 'camerons lounge 112bpm Electornica', youtubeId: 'ILd-pa6D4Xw' },
+          { id: '2017-dj-4', title: 'Choppy Feminine V2 115bpm Nu House', youtubeId: 'cAeUVh3_sAA' },
+          { id: '2017-dj-5', title: 'Doggy Shuffle 111bpm Electronica', youtubeId: 'bEeKQQBo7ZI' },
+          { id: '2017-dj-6', title: 'Iron Man 123bpm Prog House', youtubeId: 'BdhC2XrBv6w' },
+          { id: '2017-dj-7', title: 'noisette 123bpm Electronica', youtubeId: '6Z3n2E8Ee6k' },
+          { id: '2017-dj-8', title: 'My Satanic Universe 144bpm Electronica', youtubeId: 'RYOIHwjxSeQ' },
+          { id: '2017-dj-9', title: 'Militia 117bpm Electronica', youtubeId: 'VIgVi-XWT1U' },
+          { id: '2017-dj-10', title: 'me and the guy 108bpm Prog House', youtubeId: 'GkZta7uU8iI' },
+          { id: '2017-dj-11', title: 'Pentagon Wave 138bpm Dubstep', youtubeId: 'zyz1gC-Hn1Q' },
+          { id: '2017-dj-12', title: 'Roundbeck Turnwazble 108bpm Prog House', youtubeId: 'B67hYQbQRnc' },
+          { id: '2017-dj-13', title: 'routines 141bpm Electronica', youtubeId: 'T4heSzYbU6Q' },
         ]
       }
     ]
@@ -271,14 +435,21 @@ export const discography: DiscographyData[] = [
   // ============================================
   {
     year: 2018,
-    description: "Breaking Through",
+    description: "Flow State",
     albums: [
       {
         id: '2018-album-1',
-        title: "Top of the World",
-        coverUrl: "", // Optional: URL to album cover image
+        title: "Blaze",
+        artist: "Flow State",
+        coverUrl: "",
         songs: [
-          { id: '2018-song-1', title: 'Top of the World', youtubeId: 'dQw4w9WgXcQ' },
+          { id: '2018-blaze-1', title: 'beyond it', youtubeId: 'OBoB7FuGMJ8' },
+          { id: '2018-blaze-2', title: 'fractal', youtubeId: 'xCjFes1ZAmA' },
+          { id: '2018-blaze-3', title: 'lil j', youtubeId: 'OWlOm2-YXmk' },
+          { id: '2018-blaze-4', title: 'superego id lyrical', youtubeId: 'A8dPinlX4i4' },
+          { id: '2018-blaze-5', title: 'sweaty soulmates take 2', youtubeId: 'HfHfWijzftM' },
+          { id: '2018-blaze-6', title: 'wandos 39', youtubeId: 'bE7XBWMFelc' },
+          { id: '2018-blaze-7', title: 'what is her name gemini', youtubeId: '0cVGcmF8Evg' },
         ]
       }
     ]

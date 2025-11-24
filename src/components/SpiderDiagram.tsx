@@ -488,7 +488,7 @@ const SpiderDiagram: React.FC<Props> = ({ data, onYearSelect }) => {
     >
       <TransformWrapper
         initialScale={0.7}
-        minScale={0.1}
+        minScale={0.05}
         maxScale={8}
         centerOnInit={true}
         limitToBounds={false}
@@ -521,16 +521,16 @@ const SpiderDiagram: React.FC<Props> = ({ data, onYearSelect }) => {
       
       {/* Creative Instructions */}
       <motion.div 
-        className="fixed bottom-8 left-1/2 transform -translate-x-1/2 pointer-events-none z-50"
+        className="fixed bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 pointer-events-none z-50 w-max max-w-[90%]"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1 }}
       >
-        <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 shadow-2xl"
+        <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-md px-4 py-2 md:px-6 md:py-3 rounded-full border border-white/10 shadow-2xl flex items-center justify-center"
           style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)' }}
         >
-          <span className="text-slate-300 text-sm font-medium">
-            Scroll to zoom • Drag to explore • Click to dive in
+          <span className="text-slate-300 text-xs md:text-sm font-medium text-center whitespace-nowrap">
+            Zoom • Drag to explore • Tap to dive in
           </span>
         </div>
       </motion.div>

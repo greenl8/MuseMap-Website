@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     port: 3000,
     strictPort: true, // Fail if port is in use, to avoid jumping to unwanted ports
+    host: true, // Expose to network
   }
 })
 
