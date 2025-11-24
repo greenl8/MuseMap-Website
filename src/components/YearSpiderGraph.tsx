@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { TransformWrapper, TransformComponent, useControls } from 'react-zoom-pan-pinch';
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, animate } from 'framer-motion';
+import { createPortal } from 'react-dom';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { motion, useMotionValue, useSpring, useTransform, animate, MotionValue } from 'framer-motion';
 import type { DiscographyData, Album } from '../types';
+import { usePlayer } from '../context/PlayerContext';
+import CircularSpectrum from './CircularSpectrum';
 
 interface Props {
   yearData: DiscographyData;
@@ -12,8 +15,8 @@ interface Props {
 const SpringLine: React.FC<{
   x1: number;
   y1: number;
-  x2: number | ReturnType<typeof useMotionValue>;
-  y2: number | ReturnType<typeof useMotionValue>;
+  x2: number | MotionValue<number>;
+  y2: number | MotionValue<number>;
   stroke: string;
   strokeWidth: number;
   opacity: number;
@@ -30,14 +33,14 @@ const SpringLine: React.FC<{
 
   useEffect(() => {
     if (typeof x2 !== 'number') {
-      return x2.on('change', (latest) => springX.set(latest));
+      return (x2 as MotionValue<number>).on('change', (latest: number) => springX.set(latest));
     }
     springX.set(x2);
   }, [x2, springX]);
   
   useEffect(() => {
     if (typeof y2 !== 'number') {
-      return y2.on('change', (latest) => springY.set(latest));
+      return (y2 as MotionValue<number>).on('change', (latest: number) => springY.set(latest));
     }
     springY.set(y2);
   }, [y2, springY]);
@@ -57,6 +60,7 @@ const SpringLine: React.FC<{
       initial={{ pathLength: 0, opacity: 0 }}
       animate={{ pathLength: 1, opacity: opacity }}
       transition={{ duration: 1, delay: delay }}
+      style={{ willChange: 'd' }}
     />
   );
 };
@@ -69,16 +73,24 @@ const AlbumNode: React.FC<{
   onClick: (album: Album) => void;
   isHovered: boolean;
   setHoveredId: (id: string | null) => void;
-}> = ({ album, index, totalAlbums, radiusMotion, onClick, isHovered, setHoveredId }) => {
+  isMobile: boolean;
+  audioLevel: any; // MotionValue
+  isPlayingThisAlbum: boolean;
+}> = ({ album, index, totalAlbums, radiusMotion, onClick, isHovered, setHoveredId, isMobile, audioLevel, isPlayingThisAlbum }) => {
   const angle = (index / totalAlbums) * 2 * Math.PI - (Math.PI / 2);
   
   const left = useTransform(radiusMotion, (r: number) => 500 + r * Math.cos(angle));
   const top = useTransform(radiusMotion, (r: number) => 500 + r * Math.sin(angle));
+  const nodeSize = isMobile ? 96 : 128;
 
   return (
     <motion.div
       className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20"
-      style={{ left, top }}
+      style={{ 
+        left, 
+        top,
+        willChange: 'transform, opacity'
+      }}
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ delay: index * 0.1, type: "spring", damping: 12, stiffness: 200 }}
@@ -90,16 +102,33 @@ const AlbumNode: React.FC<{
       }}
     >
       <div className="relative group">
-        {/* Glow effect */}
-        <div 
-            className={`absolute inset-0 rounded-full bg-purple-500/30 blur-xl transition-opacity duration-300 ${isHovered ? 'opacity-100 scale-150' : 'opacity-0'}`}
-        />
+        {/* Circular Audio Spectrum */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <CircularSpectrum
+            size={nodeSize}
+            audioLevel={audioLevel}
+            isActive={isPlayingThisAlbum}
+            color="rgba(168, 85, 247, 0.8)"
+            barCount={16}
+          />
+        </div>
+
+        {/* Glow effect - only on desktop or reduced on mobile */}
+        {!isMobile && (
+          <div 
+              className={`absolute inset-0 rounded-full bg-purple-500/30 blur-xl transition-opacity duration-300 ${isHovered ? 'opacity-100 scale-150' : 'opacity-0'}`}
+              style={{ willChange: 'opacity' }}
+          />
+        )}
         
         {/* Album Art / Node */}
         <div 
           className={`relative w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-2 transition-all duration-300 ${isHovered ? 'border-white scale-110' : 'border-white/20'}`}
           style={{
-            boxShadow: isHovered ? '0 0 30px rgba(168, 85, 247, 0.6)' : '0 0 15px rgba(0,0,0,0.5)'
+            boxShadow: isMobile 
+              ? 'none' 
+              : (isHovered ? '0 0 30px rgba(168, 85, 247, 0.6)' : '0 0 15px rgba(0,0,0,0.5)'),
+            willChange: 'transform, box-shadow'
           }}
         >
           {album.coverUrl ? (
@@ -134,9 +163,16 @@ const AlbumGroup: React.FC<{
   onAlbumSelect: (album: Album) => void;
   isHovered: boolean;
   setHoveredId: (id: string | null) => void;
-}> = ({ album, index, totalAlbums, onAlbumSelect, isHovered, setHoveredId }) => {
+  linesContainer: SVGElement | null;
+  isMobile: boolean;
+  audioLevel: any;
+  currentAlbum: Album | null;
+}> = ({ album, index, totalAlbums, onAlbumSelect, isHovered, setHoveredId, linesContainer, isMobile, audioLevel, currentAlbum }) => {
   const baseRadius = 250;
   const radiusMotion = useMotionValue(baseRadius);
+
+  // Only react if this is the currently playing album
+  const isPlayingThisAlbum = currentAlbum?.id === album.id;
 
   useEffect(() => {
     const animation = animate(
@@ -158,7 +194,7 @@ const AlbumGroup: React.FC<{
 
   return (
     <>
-      <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
+      {linesContainer && createPortal(
         <SpringLine
           x1={500}
           y1={500}
@@ -169,8 +205,10 @@ const AlbumGroup: React.FC<{
           opacity={1}
           delay={index * 0.1}
           index={index}
-        />
-      </svg>
+        />,
+        linesContainer
+      )}
+      
       <AlbumNode
         album={album}
         index={index}
@@ -179,6 +217,9 @@ const AlbumGroup: React.FC<{
         onClick={onAlbumSelect}
         isHovered={isHovered}
         setHoveredId={setHoveredId}
+        isMobile={isMobile}
+        audioLevel={audioLevel}
+        isPlayingThisAlbum={isPlayingThisAlbum}
       />
     </>
   );
@@ -186,6 +227,19 @@ const AlbumGroup: React.FC<{
 
 const YearSpiderGraph: React.FC<Props> = ({ yearData, onAlbumSelect }) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [linesContainer, setLinesContainer] = useState<SVGElement | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const { audioLevel, currentAlbum } = usePlayer();
+
+  // Check if current album belongs to this year
+  const isCurrentYear = currentAlbum ? yearData.albums.some(a => a.id === currentAlbum.id) : false;
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // If no albums, show a message
   if (!yearData.albums || yearData.albums.length === 0) {
@@ -218,15 +272,43 @@ const YearSpiderGraph: React.FC<Props> = ({ yearData, onAlbumSelect }) => {
               transition={{ type: "spring", damping: 15, stiffness: 200 }}
             >
               <div className="relative">
+                {/* Circular Audio Spectrum for center node */}
+                {isCurrentYear && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <CircularSpectrum
+                      size={128}
+                      audioLevel={audioLevel}
+                      isActive={isCurrentYear}
+                      color="rgba(59, 130, 246, 0.8)"
+                      barCount={20}
+                    />
+                  </div>
+                )}
+
                 {/* Glow */}
-                <div className="absolute inset-0 rounded-full bg-blue-500/30 blur-2xl" />
+                {!isMobile && (
+                  <div className="absolute inset-0 rounded-full bg-blue-500/30 blur-2xl" />
+                )}
                 
                 {/* Node */}
-                <div className="relative w-32 h-32 rounded-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border-4 border-blue-500/50 shadow-[0_0_40px_rgba(59,130,246,0.4)]">
+                <div 
+                  className="relative w-32 h-32 rounded-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border-4 border-blue-500/50"
+                  style={{
+                    boxShadow: isMobile ? 'none' : '0 0 40px rgba(59,130,246,0.4)'
+                  }}
+                >
                   <span className="text-white font-bold text-3xl">{yearData.year}</span>
                 </div>
               </div>
             </motion.div>
+
+            {/* Shared SVG Container for Lines */}
+            <svg 
+              ref={setLinesContainer}
+              className="absolute inset-0 w-full h-full pointer-events-none overflow-visible z-10"
+            >
+               {/* Portal target */}
+            </svg>
 
             {/* Albums */}
             {yearData.albums.map((album, index) => (
@@ -238,6 +320,10 @@ const YearSpiderGraph: React.FC<Props> = ({ yearData, onAlbumSelect }) => {
                 onAlbumSelect={onAlbumSelect}
                 isHovered={hoveredId === album.id}
                 setHoveredId={setHoveredId}
+                linesContainer={linesContainer}
+                isMobile={isMobile}
+                audioLevel={audioLevel}
+                currentAlbum={currentAlbum}
               />
             ))}
           </div>
@@ -253,4 +339,3 @@ const YearSpiderGraph: React.FC<Props> = ({ yearData, onAlbumSelect }) => {
 };
 
 export default YearSpiderGraph;
-
