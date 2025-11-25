@@ -49,3 +49,24 @@ html {
 .text-glow {
   text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
 }
+
+/* Fullscreen support for mobile landscape visualizer */
+.landscape-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+}
+
+/* Fullscreen API support */
+:fullscreen .landscape-fullscreen,
+:-webkit-full-screen .landscape-fullscreen,
+:-moz-full-screen .landscape-fullscreen,
+:-ms-fullscreen .landscape-fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
+}

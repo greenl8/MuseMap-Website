@@ -578,6 +578,132 @@ const NoiseFieldVisualizer: React.FC<NoiseFieldVisualizerProps> = ({ onClose }) 
   const { audioLevel, isPlaying } = usePlayer();
   const [currentAudioLevel, setCurrentAudioLevel] = React.useState(0);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const [isFullscreen, setIsFullscreen] = React.useState(false);
+  const [isMobileLandscape, setIsMobileLandscape] = React.useState(false);
+  const [showControls, setShowControls] = React.useState(true);
+  const hideControlsTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const exitFullscreen = React.useCallback(() => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if ((document as any).webkitExitFullscreen) {
+      (document as any).webkitExitFullscreen();
+    } else if ((document as any).mozCancelFullScreen) {
+      (document as any).mozCancelFullScreen();
+    } else if ((document as any).msExitFullscreen) {
+      (document as any).msExitFullscreen();
+    }
+    setIsFullscreen(false);
+  }, []);
+
+  // Detect mobile and landscape orientation
+  useEffect(() => {
+    const checkMobileLandscape = () => {
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
+      const isLandscape = window.innerWidth > window.innerHeight;
+      const shouldBeFullscreen = isMobile && isLandscape;
+      
+      setIsMobileLandscape(shouldBeFullscreen);
+      
+      if (shouldBeFullscreen && containerRef.current && !isFullscreen) {
+        // Request fullscreen (only if not already fullscreen)
+        const element = containerRef.current;
+        if (element.requestFullscreen) {
+          element.requestFullscreen().then(() => {
+            setIsFullscreen(true);
+          }).catch(() => {
+            // Fullscreen request failed, continue without fullscreen
+            setIsFullscreen(false);
+          });
+        } else if ((element as any).webkitRequestFullscreen) {
+          (element as any).webkitRequestFullscreen();
+          setIsFullscreen(true);
+        } else if ((element as any).mozRequestFullScreen) {
+          (element as any).mozRequestFullScreen();
+          setIsFullscreen(true);
+        } else if ((element as any).msRequestFullscreen) {
+          (element as any).msRequestFullscreen();
+          setIsFullscreen(true);
+        }
+      } else if (!shouldBeFullscreen && isFullscreen) {
+        // Exit fullscreen if we're no longer in landscape
+        exitFullscreen();
+        setShowControls(true);
+        if (hideControlsTimeoutRef.current) {
+          clearTimeout(hideControlsTimeoutRef.current);
+        }
+      }
+    };
+
+    checkMobileLandscape();
+    window.addEventListener('resize', checkMobileLandscape);
+    window.addEventListener('orientationchange', checkMobileLandscape);
+
+    // Listen for fullscreen changes
+    const handleFullscreenChange = () => {
+      const isCurrentlyFullscreen = !!(
+        document.fullscreenElement ||
+        (document as any).webkitFullscreenElement ||
+        (document as any).mozFullScreenElement ||
+        (document as any).msFullscreenElement
+      );
+      setIsFullscreen(isCurrentlyFullscreen);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    return () => {
+      window.removeEventListener('resize', checkMobileLandscape);
+      window.removeEventListener('orientationchange', checkMobileLandscape);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+      if (hideControlsTimeoutRef.current) {
+        clearTimeout(hideControlsTimeoutRef.current);
+      }
+    };
+  }, [isFullscreen, exitFullscreen]);
+
+  // Set up auto-hide timeout when in mobile landscape fullscreen
+  useEffect(() => {
+    if (isMobileLandscape && isFullscreen) {
+      setShowControls(true);
+      // Clear any existing timeout
+      if (hideControlsTimeoutRef.current) {
+        clearTimeout(hideControlsTimeoutRef.current);
+      }
+      // Hide controls after 2 seconds
+      hideControlsTimeoutRef.current = setTimeout(() => {
+        setShowControls(false);
+      }, 2000);
+    } else {
+      // Show controls when not in mobile landscape fullscreen
+      setShowControls(true);
+      if (hideControlsTimeoutRef.current) {
+        clearTimeout(hideControlsTimeoutRef.current);
+      }
+    }
+
+    return () => {
+      if (hideControlsTimeoutRef.current) {
+        clearTimeout(hideControlsTimeoutRef.current);
+      }
+    };
+  }, [isMobileLandscape, isFullscreen]);
+
+  const handleClose = () => {
+    if (isFullscreen) {
+      exitFullscreen();
+    }
+    // Small delay to allow fullscreen exit animation
+    setTimeout(() => {
+      onClose();
+    }, 100);
+  };
 
   // Update audio level in a loop
   useEffect(() => {
@@ -597,22 +723,49 @@ const NoiseFieldVisualizer: React.FC<NoiseFieldVisualizerProps> = ({ onClose }) 
     };
   }, [audioLevel]);
 
-  // Prevent closing when clicking inside the visualizer
-  const handleBackgroundClick = (e: React.MouseEvent) => {
+  // Handle screen click/touch to show controls in fullscreen landscape mode
+  const handleScreenClick = (e: React.MouseEvent | React.TouchEvent) => {
+    // On mobile landscape fullscreen, clicking/touching shows controls
+    if (isMobileLandscape && isFullscreen) {
+      setShowControls(true);
+      // Hide again after 2 seconds
+      if (hideControlsTimeoutRef.current) {
+        clearTimeout(hideControlsTimeoutRef.current);
+      }
+      hideControlsTimeoutRef.current = setTimeout(() => {
+        setShowControls(false);
+      }, 2000);
+      return;
+    }
+    
     // Only close if clicking directly on the background div, not on children
-    if (e.target === e.currentTarget || e.target === containerRef.current) {
-      onClose();
+    // Don't close on mobile landscape - require explicit button press
+    if (!isMobileLandscape && (e.target === e.currentTarget || e.target === containerRef.current)) {
+      handleClose();
     }
   };
 
   return (
     <motion.div
       ref={containerRef}
-      className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md"
+      className={`fixed inset-0 z-[100] bg-black/95 backdrop-blur-md ${isMobileLandscape ? 'landscape-fullscreen' : ''}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      onClick={handleBackgroundClick}
+      onClick={handleScreenClick}
+      onTouchStart={handleScreenClick}
+      style={{
+        // Ensure fullscreen styling on mobile landscape
+        ...(isMobileLandscape && {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: '100vw',
+          height: '100vh',
+        })
+      }}
     >
       <div className="absolute inset-0 w-full h-full pointer-events-none">
         <Canvas
@@ -625,24 +778,40 @@ const NoiseFieldVisualizer: React.FC<NoiseFieldVisualizerProps> = ({ onClose }) 
       </div>
 
       {/* Controls */}
-      <div className="absolute top-4 left-4 z-[101] flex flex-col gap-3 pointer-events-auto">
+      <div 
+        className={`absolute ${isMobileLandscape ? 'top-6 right-6' : 'top-4 left-4'} z-[101] flex flex-col gap-3 transition-opacity duration-300 ${
+          isMobileLandscape && !showControls 
+            ? 'opacity-0 pointer-events-none' 
+            : 'opacity-100 pointer-events-auto'
+        }`}
+      >
         <button
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            onClose();
+            handleClose();
           }}
-          className="px-4 py-2 bg-slate-800/80 hover:bg-slate-700 text-white rounded-lg border border-white/20 backdrop-blur-md transition-all flex items-center gap-2"
+          className={`px-4 py-2 bg-slate-800/80 hover:bg-slate-700 text-white rounded-lg border border-white/20 backdrop-blur-md transition-all flex items-center gap-2 ${
+            isMobileLandscape ? 'text-lg px-6 py-3 shadow-lg' : ''
+          }`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            {isMobileLandscape ? (
+              // Back arrow for mobile landscape
+              <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            ) : (
+              // Close X for desktop
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            )}
           </svg>
-          Close
+          {isMobileLandscape ? 'Back to Tracks' : 'Close'}
         </button>
       </div>
 
       {/* Info */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-[101] bg-slate-800/80 backdrop-blur-md rounded-lg px-6 py-3 border border-white/20">
+      <div className={`absolute ${isMobileLandscape ? 'bottom-6 left-1/2 transform -translate-x-1/2' : 'bottom-4 left-1/2 transform -translate-x-1/2'} z-[101] bg-slate-800/80 backdrop-blur-md rounded-lg px-6 py-3 border border-white/20 ${
+        isMobileLandscape ? 'hidden' : ''
+      }`}>
         <p className="text-white text-sm text-center">
           {isPlaying ? '🎵 Audio-driven Gaussian Particle Field' : '⏸️ Paused - Play music to see visualization'}
         </p>
@@ -650,6 +819,19 @@ const NoiseFieldVisualizer: React.FC<NoiseFieldVisualizerProps> = ({ onClose }) 
           Drag to rotate • Scroll to zoom • Click outside to close
         </p>
       </div>
+
+      {/* Mobile Landscape Info */}
+      {isMobileLandscape && (
+        <div 
+          className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 z-[101] bg-slate-800/80 backdrop-blur-md rounded-lg px-4 py-2 border border-white/20 transition-opacity duration-300 ${
+            !showControls ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }`}
+        >
+          <p className="text-white text-xs text-center">
+            {isPlaying ? '🎵 Fullscreen Visualization' : '⏸️ Paused'}
+          </p>
+        </div>
+      )}
     </motion.div>
   );
 };
