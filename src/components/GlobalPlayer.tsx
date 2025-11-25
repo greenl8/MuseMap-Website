@@ -3,6 +3,7 @@ import YouTube from 'react-youtube';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../context/PlayerContext';
 import NoiseFieldVisualizer from './NoiseFieldVisualizer';
+import BarsVisualizer from './BarsVisualizer';
 
 // Types for YouTube Player
 type YouTubeEvent = {
@@ -36,7 +37,10 @@ const GlobalPlayer: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showVisualizer, setShowVisualizer] = useState(false);
+  const [showVisualizerMenu, setShowVisualizerMenu] = useState(false);
+  const [selectedVisualizer, setSelectedVisualizer] = useState<'noise' | 'bars'>('noise');
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   // YouTube Player Options
   const opts: YouTubeOpts = {
@@ -231,6 +235,29 @@ const GlobalPlayer: React.FC = () => {
     }
   };
 
+  // Close visualizer menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowVisualizerMenu(false);
+      }
+    };
+
+    if (showVisualizerMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showVisualizerMenu]);
+
+  const handleVisualizerSelect = (type: 'noise' | 'bars') => {
+    setSelectedVisualizer(type);
+    setShowVisualizerMenu(false);
+    setShowVisualizer(true);
+  };
+
   if (!currentSong) return null;
 
   return (
@@ -353,28 +380,73 @@ const GlobalPlayer: React.FC = () => {
                 </svg>
               </button>
 
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowVisualizer(true);
-                }}
-                className="text-slate-400 hover:text-purple-400 transition-colors p-2"
-                title="3D Audio Visualizer"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                </svg>
-              </button>
+              <div className="relative" ref={menuRef}>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowVisualizerMenu(!showVisualizerMenu);
+                  }}
+                  className="text-slate-400 hover:text-purple-400 transition-colors p-2"
+                  title="Audio Visualizers"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                </button>
+                
+                {/* Visualizer Selection Menu */}
+                <AnimatePresence>
+                  {showVisualizerMenu && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute bottom-full right-0 mb-2 bg-slate-800/95 backdrop-blur-lg border border-white/10 rounded-lg shadow-xl overflow-hidden min-w-[180px]"
+                    >
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleVisualizerSelect('noise');
+                        }}
+                        className="w-full px-4 py-3 text-left text-white hover:bg-slate-700/50 transition-colors flex items-center gap-2"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                        <span className="text-sm">Noise Field</span>
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleVisualizerSelect('bars');
+                        }}
+                        className="w-full px-4 py-3 text-left text-white hover:bg-slate-700/50 transition-colors flex items-center gap-2 border-t border-white/10"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                        </svg>
+                        <span className="text-sm">Bars</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </div>
       </motion.div>
 
-      {/* 3D Noise Field Visualizer */}
+      {/* Visualizers */}
       <AnimatePresence>
-        {showVisualizer && (
+        {showVisualizer && selectedVisualizer === 'noise' && (
           <NoiseFieldVisualizer 
             key="noise-field-visualizer"
+            onClose={() => setShowVisualizer(false)} 
+          />
+        )}
+        {showVisualizer && selectedVisualizer === 'bars' && (
+          <BarsVisualizer 
+            key="bars-visualizer"
             onClose={() => setShowVisualizer(false)} 
           />
         )}
