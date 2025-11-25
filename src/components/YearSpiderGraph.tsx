@@ -9,6 +9,7 @@ import CircularSpectrum from './CircularSpectrum';
 interface Props {
   yearData: DiscographyData;
   onAlbumSelect: (album: Album) => void;
+  onMediaSelect?: () => void;
 }
 
 // Spring-based line component (reused concept from SpiderDiagram)
@@ -22,7 +23,7 @@ const SpringLine: React.FC<{
   opacity: number;
   delay: number;
   index: number;
-}> = ({ x1, y1, x2, y2, stroke, strokeWidth, opacity, delay, index }) => {
+}> = ({ x1, y1, x2, y2, stroke, strokeWidth, opacity, delay }) => {
   const initialX = typeof x2 === 'number' ? x2 : x2.get();
   const initialY = typeof y2 === 'number' ? y2 : y2.get();
   
@@ -225,7 +226,143 @@ const AlbumGroup: React.FC<{
   );
 };
 
-const YearSpiderGraph: React.FC<Props> = ({ yearData, onAlbumSelect }) => {
+// Media Node Component
+const MediaNode: React.FC<{
+  index: number;
+  totalItems: number;
+  radiusMotion: any;
+  onClick: () => void;
+  isHovered: boolean;
+  setHoveredId: (id: string | null) => void;
+  isMobile: boolean;
+}> = ({ index, totalItems, radiusMotion, onClick, isHovered, setHoveredId, isMobile }) => {
+  const angle = (index / totalItems) * 2 * Math.PI - (Math.PI / 2);
+  
+  const left = useTransform(radiusMotion, (r: number) => 500 + r * Math.cos(angle));
+  const top = useTransform(radiusMotion, (r: number) => 500 + r * Math.sin(angle));
+
+  return (
+    <motion.div
+      className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20"
+      style={{ 
+        left, 
+        top,
+        willChange: 'transform, opacity'
+      }}
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ delay: index * 0.1, type: "spring", damping: 12, stiffness: 200 }}
+      onMouseEnter={() => setHoveredId('media')}
+      onMouseLeave={() => setHoveredId(null)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+    >
+      <div className="relative group">
+        {/* Glow effect */}
+        {!isMobile && (
+          <div 
+            className={`absolute inset-0 rounded-full bg-green-500/30 blur-xl transition-opacity duration-300 ${isHovered ? 'opacity-100 scale-150' : 'opacity-0'}`}
+            style={{ willChange: 'opacity' }}
+          />
+        )}
+        
+        {/* Media Node */}
+        <div 
+          className={`relative w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-2 transition-all duration-300 ${isHovered ? 'border-green-400 scale-110' : 'border-green-500/40'}`}
+          style={{
+            boxShadow: isMobile 
+              ? 'none' 
+              : (isHovered ? '0 0 30px rgba(34, 197, 94, 0.6)' : '0 0 15px rgba(0,0,0,0.5)'),
+            willChange: 'transform, box-shadow',
+            backgroundColor: 'rgba(34, 197, 94, 0.1)'
+          }}
+        >
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-800/50 to-green-900/50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor" className="text-green-400">
+              <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+            </svg>
+          </div>
+          
+          {/* Overlay */}
+          <div className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${isHovered ? 'opacity-0' : 'opacity-100'}`} />
+        </div>
+
+        {/* Label */}
+        <motion.div 
+          className="absolute top-full mt-3 left-1/2 transform -translate-x-1/2 text-center w-48 pointer-events-none"
+          animate={{ y: isHovered ? 0 : -5, opacity: isHovered ? 1 : 0.7 }}
+        >
+          <h3 className="text-white font-bold text-sm md:text-base shadow-black drop-shadow-lg">Media Library</h3>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+};
+
+// Media Group Component
+const MediaGroup: React.FC<{
+  index: number;
+  totalItems: number;
+  onMediaSelect: () => void;
+  isHovered: boolean;
+  setHoveredId: (id: string | null) => void;
+  linesContainer: SVGElement | null;
+  isMobile: boolean;
+}> = ({ index, totalItems, onMediaSelect, isHovered, setHoveredId, linesContainer, isMobile }) => {
+  const baseRadius = 250;
+  const radiusMotion = useMotionValue(baseRadius);
+
+  useEffect(() => {
+    const animation = animate(
+      radiusMotion,
+      [baseRadius, baseRadius + 20, baseRadius],
+      {
+        duration: 3 + index * 0.5,
+        repeat: Infinity,
+        ease: "easeInOut",
+        delay: index * 0.2,
+      }
+    );
+    return () => animation.stop();
+  }, [baseRadius, index, radiusMotion]);
+
+  const angle = (index / totalItems) * 2 * Math.PI - (Math.PI / 2);
+  const endX = useTransform(radiusMotion, (r: number) => 500 + r * Math.cos(angle));
+  const endY = useTransform(radiusMotion, (r: number) => 500 + r * Math.sin(angle));
+
+  return (
+    <>
+      {linesContainer && createPortal(
+        <SpringLine
+          x1={500}
+          y1={500}
+          x2={endX}
+          y2={endY}
+          stroke={isHovered ? "rgba(34, 197, 94, 0.8)" : "rgba(148, 163, 184, 0.3)"}
+          strokeWidth={isHovered ? 2 : 1}
+          opacity={1}
+          delay={index * 0.1}
+          index={index}
+        />,
+        linesContainer
+      )}
+      
+      <MediaNode
+        index={index}
+        totalItems={totalItems}
+        radiusMotion={radiusMotion}
+        onClick={onMediaSelect}
+        isHovered={isHovered}
+        setHoveredId={setHoveredId}
+        isMobile={isMobile}
+      />
+    </>
+  );
+};
+
+const YearSpiderGraph: React.FC<Props> = ({ yearData, onAlbumSelect, onMediaSelect }) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [linesContainer, setLinesContainer] = useState<SVGElement | null>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -241,11 +378,20 @@ const YearSpiderGraph: React.FC<Props> = ({ yearData, onAlbumSelect }) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // If no albums, show a message
-  if (!yearData.albums || yearData.albums.length === 0) {
+  // Calculate total items (albums + media if exists)
+  const totalAlbums = yearData.albums?.length || 0;
+  const hasMedia = yearData.media && (
+    (yearData.media.images && yearData.media.images.length > 0) ||
+    (yearData.media.videos && yearData.media.videos.length > 0) ||
+    (yearData.media.writing && yearData.media.writing.length > 0)
+  );
+  const totalItems = totalAlbums + (hasMedia ? 1 : 0);
+
+  // If no albums and no media, show a message
+  if (totalItems === 0) {
     return (
       <div className="w-full h-full flex items-center justify-center text-slate-400">
-        <p>No albums recorded for {yearData.year}</p>
+        <p>No content recorded for {yearData.year}</p>
       </div>
     );
   }
@@ -316,7 +462,7 @@ const YearSpiderGraph: React.FC<Props> = ({ yearData, onAlbumSelect }) => {
                 key={album.id}
                 album={album}
                 index={index}
-                totalAlbums={yearData.albums.length}
+                totalAlbums={totalItems}
                 onAlbumSelect={onAlbumSelect}
                 isHovered={hoveredId === album.id}
                 setHoveredId={setHoveredId}
@@ -326,13 +472,26 @@ const YearSpiderGraph: React.FC<Props> = ({ yearData, onAlbumSelect }) => {
                 currentAlbum={currentAlbum}
               />
             ))}
+
+            {/* Media Library Node */}
+            {hasMedia && onMediaSelect && (
+              <MediaGroup
+                index={totalAlbums}
+                totalItems={totalItems}
+                onMediaSelect={onMediaSelect}
+                isHovered={hoveredId === 'media'}
+                setHoveredId={setHoveredId}
+                linesContainer={linesContainer}
+                isMobile={isMobile}
+              />
+            )}
           </div>
         </TransformComponent>
       </TransformWrapper>
       
       {/* Instructions */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 pointer-events-none opacity-60">
-         <p className="text-slate-400 text-xs">Drag to explore • Click an album to view details</p>
+         <p className="text-slate-400 text-xs">Drag to explore • Click an album or media to view details</p>
       </div>
     </div>
   );

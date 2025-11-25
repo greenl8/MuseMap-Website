@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import YouTube from 'react-youtube';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../context/PlayerContext';
+import NoiseFieldVisualizer from './NoiseFieldVisualizer';
 
 // Types for YouTube Player
 type YouTubeEvent = {
@@ -29,11 +30,12 @@ type YouTubeOpts = {
 };
 
 const GlobalPlayer: React.FC = () => {
-  const { currentSong, currentAlbum, isPlaying, setPlaying, nextSong, prevSong, togglePlay } = usePlayer();
+  const { currentSong, currentAlbum, isPlaying, isShuffle, setPlaying, nextSong, prevSong, togglePlay, toggleShuffle } = usePlayer();
   const playerRef = useRef<any>(null);
   const [isReady, setIsReady] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [showVisualizer, setShowVisualizer] = useState(false);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // YouTube Player Options
@@ -304,6 +306,7 @@ const GlobalPlayer: React.FC = () => {
               <button 
                 onClick={prevSong}
                 className="text-slate-400 hover:text-white transition-colors p-2"
+                title="Previous song"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M19 20L9 12l10-8v16zM5 19h2V5H5v14z"/>
@@ -313,6 +316,7 @@ const GlobalPlayer: React.FC = () => {
               <button 
                 onClick={togglePlay}
                 className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white text-slate-900 flex items-center justify-center hover:bg-slate-200 transition-colors shadow-lg"
+                title={isPlaying ? "Pause" : "Play"}
               >
                 {isPlaying ? (
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -328,15 +332,53 @@ const GlobalPlayer: React.FC = () => {
               <button 
                 onClick={nextSong}
                 className="text-slate-400 hover:text-white transition-colors p-2"
+                title="Next song"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M5 4l10 8-10 8V4zm14 1v14h-2V5h2z"/>
+                </svg>
+              </button>
+
+              <button 
+                onClick={toggleShuffle}
+                className={`transition-colors p-2 ${
+                  isShuffle 
+                    ? 'text-purple-400 hover:text-purple-300' 
+                    : 'text-slate-400 hover:text-white'
+                }`}
+                title={isShuffle ? "Shuffle: On" : "Shuffle: Off"}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+                </svg>
+              </button>
+
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowVisualizer(true);
+                }}
+                className="text-slate-400 hover:text-purple-400 transition-colors p-2"
+                title="3D Audio Visualizer"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                 </svg>
               </button>
             </div>
           </div>
         </div>
       </motion.div>
+
+      {/* 3D Noise Field Visualizer */}
+      <AnimatePresence>
+        {showVisualizer && (
+          <NoiseFieldVisualizer 
+            key="noise-field-visualizer"
+            onClose={() => setShowVisualizer(false)} 
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 };

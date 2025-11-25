@@ -7,8 +7,10 @@ interface PlayerContextType {
   currentSong: Song | null;
   currentAlbum: Album | null;
   isPlaying: boolean;
+  isShuffle: boolean;
   playSong: (song: Song, album: Album) => void;
   togglePlay: () => void;
+  toggleShuffle: () => void;
   nextSong: () => void;
   prevSong: () => void;
   setPlaying: (playing: boolean) => void;
@@ -48,10 +50,23 @@ const getAllSongsChronologically = (allDiscography: DiscographyData[]) => {
   return allSongs;
 };
 
+// Fisher-Yates shuffle algorithm
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [currentAlbum, setCurrentAlbum] = useState<Album | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isShuffle, setIsShuffle] = useState(false);
+  const [shuffledPlaylist, setShuffledPlaylist] = useState<Array<{ song: Song; album: Album; year: number }>>([]);
+  const [shuffleIndex, setShuffleIndex] = useState(0);
   
   // Shared audio level value (0 to 1)
   const audioLevel = useMotionValue(0);
@@ -95,6 +110,34 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const allSongs = useMemo(() => getAllSongsChronologically(discography), []);
 
+  // Initialize or reshuffle playlist when shuffle is toggled
+  useEffect(() => {
+    if (isShuffle) {
+      const shuffled = shuffleArray(allSongs);
+      setShuffledPlaylist(shuffled);
+      // Find current song in shuffled playlist and set index
+      if (currentSong) {
+        const index = shuffled.findIndex(item => item.song.id === currentSong.id);
+        setShuffleIndex(index >= 0 ? index : 0);
+      } else {
+        setShuffleIndex(0);
+      }
+    } else {
+      // Clear shuffled playlist when shuffle is disabled
+      setShuffledPlaylist([]);
+    }
+  }, [isShuffle, allSongs, currentSong]); // Include currentSong to update index when song changes
+
+  // Update shuffle index when current song changes (if shuffle is enabled)
+  useEffect(() => {
+    if (isShuffle && currentSong && shuffledPlaylist.length > 0) {
+      const index = shuffledPlaylist.findIndex(item => item.song.id === currentSong.id);
+      if (index >= 0) {
+        setShuffleIndex(index);
+      }
+    }
+  }, [currentSong, isShuffle, shuffledPlaylist]);
+
   const playSong = useCallback((song: Song, album: Album) => {
     setCurrentSong(song);
     setCurrentAlbum(album);
@@ -111,41 +154,84 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setIsPlaying(playing);
   }, []);
 
+  const toggleShuffle = useCallback(() => {
+    setIsShuffle(prev => {
+      const newShuffle = !prev;
+      if (newShuffle) {
+        // Create new shuffled playlist
+        const shuffled = shuffleArray(allSongs);
+        setShuffledPlaylist(shuffled);
+        // Find current song in shuffled playlist
+        if (currentSong) {
+          const index = shuffled.findIndex(item => item.song.id === currentSong.id);
+          setShuffleIndex(index >= 0 ? index : 0);
+        } else {
+          setShuffleIndex(0);
+        }
+      }
+      return newShuffle;
+    });
+  }, [allSongs, currentSong]);
+
   const nextSong = useCallback(() => {
     if (!currentSong) return;
 
-    const currentIndex = allSongs.findIndex(item => item.song.id === currentSong.id);
-    if (currentIndex === -1) return;
+    if (isShuffle && shuffledPlaylist.length > 0) {
+      // Use shuffled playlist
+      const nextIndex = (shuffleIndex + 1) % shuffledPlaylist.length;
+      const nextItem = shuffledPlaylist[nextIndex];
+      setShuffleIndex(nextIndex);
+      setCurrentSong(nextItem.song);
+      setCurrentAlbum(nextItem.album);
+      setIsPlaying(true);
+    } else {
+      // Use chronological order
+      const currentIndex = allSongs.findIndex(item => item.song.id === currentSong.id);
+      if (currentIndex === -1) return;
 
-    const nextIndex = (currentIndex + 1) % allSongs.length;
-    const nextItem = allSongs[nextIndex];
-    
-    setCurrentSong(nextItem.song);
-    setCurrentAlbum(nextItem.album);
-    setIsPlaying(true);
-  }, [currentSong, allSongs]);
+      const nextIndex = (currentIndex + 1) % allSongs.length;
+      const nextItem = allSongs[nextIndex];
+      
+      setCurrentSong(nextItem.song);
+      setCurrentAlbum(nextItem.album);
+      setIsPlaying(true);
+    }
+  }, [currentSong, allSongs, isShuffle, shuffledPlaylist, shuffleIndex]);
 
   const prevSong = useCallback(() => {
     if (!currentSong) return;
 
-    const currentIndex = allSongs.findIndex(item => item.song.id === currentSong.id);
-    if (currentIndex === -1) return;
+    if (isShuffle && shuffledPlaylist.length > 0) {
+      // Use shuffled playlist
+      const prevIndex = (shuffleIndex - 1 + shuffledPlaylist.length) % shuffledPlaylist.length;
+      const prevItem = shuffledPlaylist[prevIndex];
+      setShuffleIndex(prevIndex);
+      setCurrentSong(prevItem.song);
+      setCurrentAlbum(prevItem.album);
+      setIsPlaying(true);
+    } else {
+      // Use chronological order
+      const currentIndex = allSongs.findIndex(item => item.song.id === currentSong.id);
+      if (currentIndex === -1) return;
 
-    const prevIndex = (currentIndex - 1 + allSongs.length) % allSongs.length;
-    const prevItem = allSongs[prevIndex];
-    
-    setCurrentSong(prevItem.song);
-    setCurrentAlbum(prevItem.album);
-    setIsPlaying(true);
-  }, [currentSong, allSongs]);
+      const prevIndex = (currentIndex - 1 + allSongs.length) % allSongs.length;
+      const prevItem = allSongs[prevIndex];
+      
+      setCurrentSong(prevItem.song);
+      setCurrentAlbum(prevItem.album);
+      setIsPlaying(true);
+    }
+  }, [currentSong, allSongs, isShuffle, shuffledPlaylist, shuffleIndex]);
 
   return (
     <PlayerContext.Provider value={{
       currentSong,
       currentAlbum,
       isPlaying,
+      isShuffle,
       playSong,
       togglePlay,
+      toggleShuffle,
       nextSong,
       prevSong,
       setPlaying,

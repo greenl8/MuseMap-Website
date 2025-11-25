@@ -452,7 +452,27 @@ export const discography: DiscographyData[] = [
           { id: '2018-blaze-7', title: 'what is her name gemini', youtubeId: '0cVGcmF8Evg' },
         ]
       }
-    ]
+    ],
+    media: {
+      images: [
+        { id: '2018-img-01', title: 'truegod.space-01', url: '/resources/truegod.space-01.jpg' },
+        { id: '2018-img-02', title: 'truegod.space-02', url: '/resources/truegod.space-02.jpg' },
+        { id: '2018-img-03', title: 'truegod.space-03', url: '/resources/truegod.space-03.jpg' },
+        { id: '2018-img-04', title: 'truegod.space-04', url: '/resources/truegod.space-04.jpg' },
+        { id: '2018-img-05', title: 'truegod.space-05', url: '/resources/truegod.space-05.jpg' },
+        { id: '2018-img-06', title: 'truegod.space-06', url: '/resources/truegod.space-06.jpg' },
+        { id: '2018-img-07', title: 'truegod.space-07', url: '/resources/truegod.space-07.jpg' },
+        { id: '2018-img-08', title: 'truegod.space-08', url: '/resources/truegod.space-08.jpg' },
+        { id: '2018-img-12', title: 'truegod.space-12', url: '/resources/truegod.space-12.jpg' },
+        { id: '2018-img-13', title: 'truegod.space-13', url: '/resources/truegod.space-13.jpg' },
+        { id: '2018-img-14', title: 'truegod.space-14', url: '/resources/truegod.space-14.jpg' },
+        { id: '2018-img-15', title: 'truegod.space-15', url: '/resources/truegod.space-15.jpg' },
+        { id: '2018-img-16', title: 'truegod.space-16', url: '/resources/truegod.space-16.jpg' },
+        { id: '2018-img-16b', title: 'truegod.space-16-b', url: '/resources/truegod.space-16-b-lowres.jpg' },
+      ],
+      videos: [],
+      writing: []
+    }
   },
 
   // ============================================

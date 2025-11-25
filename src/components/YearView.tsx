@@ -5,6 +5,7 @@ import { TransformWrapper, TransformComponent, useControls } from 'react-zoom-pa
 import YearSpiderGraph from './YearSpiderGraph';
 import { usePlayer } from '../context/PlayerContext';
 import CircularSpectrum from './CircularSpectrum';
+import MediaLibraryView from './MediaLibraryView';
 
 interface Props {
   yearData: DiscographyData;
@@ -357,10 +358,17 @@ const AlbumView: React.FC<{
 
 const YearView: React.FC<Props> = ({ yearData, allDiscography, onBack, onYearChange }) => {
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
+  const [showMedia, setShowMedia] = useState(false);
 
   // Find album index in the year's albums array
   const handleAlbumSelect = (album: Album) => {
     setSelectedAlbum(album);
+    setShowMedia(false);
+  };
+
+  const handleMediaSelect = () => {
+    setShowMedia(true);
+    setSelectedAlbum(null);
   };
 
   return (
@@ -377,6 +385,52 @@ const YearView: React.FC<Props> = ({ yearData, allDiscography, onBack, onYearCha
                  album={selectedAlbum}
                  onBack={() => setSelectedAlbum(null)} 
                />
+            </motion.div>
+         ) : showMedia && yearData.media ? (
+            // MEDIA LIBRARY VIEW MODE
+            <motion.div
+               key="media-view"
+               className="absolute inset-0 z-0 overflow-hidden"
+               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            >
+               <div className="w-full h-full relative bg-transparent">
+                 {/* Floating Header */}
+                 <div className="absolute top-0 left-0 p-6 md:p-10 z-30 pointer-events-none">
+                   <motion.div 
+                     initial={{ y: -20, opacity: 0 }} 
+                     animate={{ y: 0, opacity: 1 }} 
+                     className="pointer-events-auto"
+                   >
+                     <h1 className="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 drop-shadow-lg">
+                       {yearData.year}
+                     </h1>
+                     <p className="text-xl md:text-2xl text-green-200 mt-2 font-light max-w-md drop-shadow-md">
+                       {yearData.description}
+                     </p>
+                   </motion.div>
+                 </div>
+
+                 {/* Floating Back Button */}
+                 <div className="absolute top-0 right-0 p-6 md:p-10 z-30 pointer-events-none">
+                   <motion.button
+                     initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }}
+                     onClick={() => setShowMedia(false)}
+                     className="pointer-events-auto px-6 py-3 bg-slate-800/80 backdrop-blur-md hover:bg-slate-700 text-white rounded-full border border-white/20 shadow-lg flex items-center gap-2 transition-all group"
+                   >
+                     <span>Back to Albums</span>
+                     <span className="group-hover:translate-x-1 transition-transform">✕</span>
+                   </motion.button>
+                 </div>
+
+                 {/* Scrollable Content Area */}
+                 <div className="w-full h-full overflow-y-auto custom-scrollbar pt-32 pb-24">
+                   <MediaLibraryView 
+                     media={yearData.media}
+                     year={yearData.year}
+                     onBack={() => setShowMedia(false)}
+                   />
+                 </div>
+               </div>
             </motion.div>
          ) : (
             // SPIDER VIEW MODE - Full Screen "Open Feel"
@@ -413,6 +467,7 @@ const YearView: React.FC<Props> = ({ yearData, allDiscography, onBack, onYearCha
                <YearSpiderGraph 
                  yearData={yearData} 
                  onAlbumSelect={handleAlbumSelect}
+                 onMediaSelect={handleMediaSelect}
                />
             </motion.div>
          )}
