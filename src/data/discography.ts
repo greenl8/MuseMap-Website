@@ -451,6 +451,116 @@ export const discography: DiscographyData[] = [
           { id: '2018-blaze-6', title: 'wandos 39', youtubeId: 'bE7XBWMFelc' },
           { id: '2018-blaze-7', title: 'what is her name gemini', youtubeId: '0cVGcmF8Evg' },
         ]
+      },
+      {
+        id: '2018-album-2',
+        title: "expo.long.tracks-cuts",
+        artist: "Flow State",
+        coverUrl: "/resources/true.purgatory.jpg",
+        songs: [
+          { id: '2018-expo-1', title: '84bpm', youtubeId: 'va6ai-oCb5U' },
+          { id: '2018-expo-2', title: 'cohoons', youtubeId: 'TzPApFqM5HM' },
+          { id: '2018-expo-3', title: 'disgussting psychotic mess me', youtubeId: 'eXVL_9k2SqI' },
+          { id: '2018-expo-4', title: 'festivus', youtubeId: 'zELiBrPBwU8' },
+          { id: '2018-expo-5', title: 'grapefruits', youtubeId: 'fsc30gwrqpU' },
+          { id: '2018-expo-6', title: 'grapeshine', youtubeId: 'z4PwjgqZ38c' },
+          { id: '2018-expo-7', title: 'pearsome', youtubeId: 'SlJ8werANKM' },
+          { id: '2018-expo-8', title: 'pointed ears and long', youtubeId: 'JzXG5iIPM3o' },
+          { id: '2018-expo-9', title: 'purpose', youtubeId: 'AVoC7AH9Bng' },
+          { id: '2018-expo-10', title: 'snoberry in my family', youtubeId: 'qi-w0ieqZv0' },
+          { id: '2018-expo-11', title: 'sweaty soulmates', youtubeId: 's6N2MefnL60' },
+          { id: '2018-expo-12', title: 'The breaking of th human heart', youtubeId: 'BJvcGTMKgHo' },
+        ]
+      },
+      {
+        id: '2018-album-3',
+        title: "More Open",
+        artist: "Flow State",
+        coverUrl: "/resources/more open.jpg",
+        songs: [
+          { id: '2018-moreopen-1', title: 'The source', youtubeId: 'QirKKYrC6oA' },
+          { id: '2018-moreopen-2', title: '4ug', youtubeId: '0bLm_-EZI2o' },
+          { id: '2018-moreopen-3', title: 'photographic', youtubeId: 'jc0VUG3QUrU' },
+          { id: '2018-moreopen-4', title: 'Disheartened', youtubeId: 'rS82bvZs14Q' },
+          { id: '2018-moreopen-5', title: 'Self ity', youtubeId: 'GOiCCuxldZo' },
+          { id: '2018-moreopen-6', title: 'lets make our own r...', youtubeId: 'mTqu9tQLHHQ' },
+          { id: '2018-moreopen-7', title: 'Sunday', youtubeId: 'f2V5_h7Rt5A' },
+        ]
+      },
+      {
+        id: '2018-album-4',
+        title: "One",
+        artist: "MHE",
+        coverUrl: "",
+        songs: [
+          { id: '2018-mhe-1', title: 'my human is on a lead thats tidy master', youtubeId: '1RNPYJ7VO6o' },
+          { id: '2018-mhe-2', title: 'oprg2 master', youtubeId: 'iKT_D09lXYo' },
+          { id: '2018-mhe-3', title: 'Ring Finer Master', youtubeId: 'TK6VsydgeHs' },
+          { id: '2018-mhe-4', title: 'Spark Objectivity master', youtubeId: '6mebkfO4NPA' },
+          { id: '2018-mhe-5', title: 'Taking it lightly journey master', youtubeId: 'ByIFITDsRmo' },
+        ]
+      },
+      {
+        id: '2018-album-5',
+        title: "Stockholm Downsyndrome",
+        coverUrl: "",
+        songs: [
+          { id: '2018-stockholm-1', title: 'Stockholm Downsyndrome', youtubeId: '4-SYFOMwS9Y' },
+        ]
+      },
+      {
+        id: '2018-album-6',
+        title: "misc tracks",
+        artist: "truegod.space",
+        coverUrl: "",
+        songs: [
+          { id: '2018-truegod-misc-1', title: 'il j demo', youtubeId: 'TutMfo5owmA' },
+          { id: '2018-truegod-misc-2', title: 'computer music assessment 02 jude', youtubeId: 'Gpakcm7qkxg' },
+          { id: '2018-truegod-misc-3', title: 'full moon you', youtubeId: 'aCkyqks4kZc' },
+          { id: '2018-truegod-misc-4', title: 'fx trading', youtubeId: 'dAnf7IFO3WE' },
+          { id: '2018-truegod-misc-5', title: 'Human superego idm', youtubeId: 'lTwhxAG2ZDQ' },
+          { id: '2018-truegod-misc-6', title: 'numb month', youtubeId: 'q4yp8L6yazE' },
+          { id: '2018-truegod-misc-7', title: 'Sages', youtubeId: 'n1U58DE3MjQ' },
+          { id: '2018-truegod-misc-8', title: 'truegod space my pla', youtubeId: 'WJ15WQMv0vs' },
+          { id: '2018-truegod-misc-9', title: 'T drop phase test', youtubeId: 't1TpQUf2t_0' },
+          { id: '2018-truegod-misc-10', title: 'truegod space rico s always rong', youtubeId: '-HpYGxm-c7A' },
+          { id: '2018-truegod-misc-11', title: 'truegod space she s not on my mind', youtubeId: 'aLPF35rcMN0' },
+          { id: '2018-truegod-misc-12', title: 'truegod space shifts and sans scales', youtubeId: 'JXje_DX2z0M' },
+        ]
+      },
+      {
+        id: '2018-album-7',
+        title: "Ceste Que Vie Act 1666",
+        artist: "I",
+        coverUrl: "",
+        songs: [
+          { id: '2018-ceste-1', title: 'I blood on my ive master', youtubeId: 'jY2Ga6ajtzg' },
+          { id: '2018-ceste-2', title: 'I idea crazy master', youtubeId: 'KkrZtekvM_g' },
+          { id: '2018-ceste-3', title: 'I its sweet master', youtubeId: 'DJqHwmNTC9w' },
+          { id: '2018-ceste-4', title: 'I mini breaks master', youtubeId: 'aZsnB6-gA-0' },
+          { id: '2018-ceste-5', title: 'I no pants master', youtubeId: 'pm8xTVboKa8' },
+          { id: '2018-ceste-6', title: 'I numb month rode vox', youtubeId: 'jSzyw1xHZmo' },
+          { id: '2018-ceste-7', title: 'I rico s always rong rode vox master', youtubeId: 'JNjxpD1xXio' },
+          { id: '2018-ceste-8', title: 'I so un scared master', youtubeId: 'jQUTOUTemqQ' },
+          { id: '2018-ceste-9', title: 'I so scared master', youtubeId: 'wLBswKERc3o' },
+          { id: '2018-ceste-10', title: 'I subconscious genius master', youtubeId: 'cgRDhqXwnBQ' },
+          { id: '2018-ceste-11', title: 'I truth awareness #master', youtubeId: 'aB5vyPBsKRA' },
+        ]
+      },
+      {
+        id: '2018-album-8',
+        title: "bedroom music (peartree) EP",
+        artist: "truegod.space",
+        coverUrl: "/resources/bedroom music (peartree) EP.jpg",
+        songs: [
+          { id: '2018-peartree-1', title: 'truegod space bedroom music peartree', youtubeId: 'AMYc-0s6tOg' },
+          { id: '2018-peartree-2', title: 'truegod space hostage V2', youtubeId: 'HnFikCbcAck' },
+          { id: '2018-peartree-3', title: 'truegod space 1345', youtubeId: 'gYZe7J8gJj0' },
+          { id: '2018-peartree-4', title: 'truegod space frazzled up', youtubeId: 'jTmQVgaepFY' },
+          { id: '2018-peartree-5', title: 'truegod space mass etter', youtubeId: 'ECCXcIowMII' },
+          { id: '2018-peartree-6', title: 'truegod space HS ly', youtubeId: 'Ui92cp8TDzo' },
+          { id: '2018-peartree-7', title: 'truegod space sipping2', youtubeId: 'HTGpToL3VCo' },
+        ]
       }
     ],
     media: {
@@ -476,12 +586,26 @@ export const discography: DiscographyData[] = [
   },
 
   // ============================================
-  // 2019 - No releases (example of empty year)
+  // 2019
   // ============================================
   {
     year: 2019,
     description: "New Heights",
-    albums: []
+    albums: [
+      {
+        id: '2019-album-1',
+        title: "misc tracks",
+        coverUrl: "",
+        songs: [
+          { id: '2019-misc-1', title: 'saturns computers', youtubeId: 'j4frSIiGFjM' },
+          { id: '2019-misc-2', title: 'new gear', youtubeId: 'nLD0BSBbHko' },
+          { id: '2019-misc-3', title: 'my potential', youtubeId: '6PqOixx6E1I' },
+          { id: '2019-misc-4', title: 'mind space mercury speed master', youtubeId: 'zMrh07af9ts' },
+          { id: '2019-misc-5', title: 'mind space il j master', youtubeId: 'pv9MnDi9At4' },
+          { id: '2019-misc-6', title: 'jaybo', youtubeId: 'T8gjKm8ur8s' },
+        ]
+      }
+    ]
   },
 
   // ============================================
