@@ -44,8 +44,8 @@ const GlobalPlayer: React.FC = () => {
 
   // YouTube Player Options
   const opts: YouTubeOpts = {
-    height: '0',
-    width: '0',
+    height: '1',
+    width: '1',
     playerVars: {
       autoplay: 1,
       controls: 0,
@@ -53,50 +53,40 @@ const GlobalPlayer: React.FC = () => {
       fs: 0,
       iv_load_policy: 3,
       modestbranding: 1,
-      playsinline: 1, // Critical for mobile
+      playsinline: 1,
       rel: 0,
       showinfo: 0,
+      origin: typeof window !== 'undefined' ? window.location.origin : undefined,
     },
   };
 
   // Update progress bar
   useEffect(() => {
-    if (playerRef.current && isReady && isPlaying && currentSong) {
-      // Clear any existing interval
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-      }
-      
-      // Update progress every 100ms
+    // Clear any existing interval
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
+    }
+    
+    if (playerRef.current && isReady && isPlaying) {
+      // Update progress every 250ms
       progressIntervalRef.current = setInterval(() => {
-        // Double-check player is still valid
-        if (playerRef.current && isReady) {
+        if (playerRef.current) {
           try {
-            // Check if player methods are available
-            if (typeof playerRef.current.getCurrentTime === 'function' && 
-                typeof playerRef.current.getDuration === 'function') {
-              const current = playerRef.current.getCurrentTime();
-              const total = playerRef.current.getDuration();
-              
-              if (typeof current === 'number' && !isNaN(current) && isFinite(current)) {
-                setCurrentTime(current);
-              }
-              if (typeof total === 'number' && !isNaN(total) && isFinite(total) && total > 0) {
-                setDuration(total);
-              }
+            const current = playerRef.current.getCurrentTime();
+            const total = playerRef.current.getDuration();
+            
+            if (typeof current === 'number' && !isNaN(current)) {
+              setCurrentTime(current);
+            }
+            if (typeof total === 'number' && !isNaN(total) && total > 0) {
+              setDuration(total);
             }
           } catch (error) {
-            // Player might not be ready or might be transitioning
-            // Silently handle - this is expected during transitions
+            // Ignore errors during transitions
           }
         }
-      }, 100);
-    } else {
-      // Clear interval when paused or not ready
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-        progressIntervalRef.current = null;
-      }
+      }, 250);
     }
     
     return () => {
@@ -105,56 +95,50 @@ const GlobalPlayer: React.FC = () => {
         progressIntervalRef.current = null;
       }
     };
-  }, [isReady, isPlaying, currentSong]);
+  }, [isReady, isPlaying]);
 
-  // Handle Song Changes
+  // Handle Song Changes - Reset state when song changes
   useEffect(() => {
-    if (currentSong) {
-      // Reset time and state when song changes
-      setCurrentTime(0);
-      setDuration(0);
-      setIsReady(false);
-      
-      // Clear any existing progress interval
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-        progressIntervalRef.current = null;
-      }
-      
-      // Reset player ref - it will be set again when new video is ready
-      // Don't set to null immediately to avoid race conditions
+    // Reset time and state when song changes
+    setCurrentTime(0);
+    setDuration(0);
+    setIsReady(false);
+    
+    // Clear the player ref - new player will be created via key prop
+    playerRef.current = null;
+    
+    // Clear any existing progress interval
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
     }
-  }, [currentSong]);
+  }, [currentSong?.id]); // Only trigger on song ID change
 
   // Handle Play/Pause State
   useEffect(() => {
-    if (playerRef.current && isReady && currentSong) {
-      try {
-        if (isPlaying) {
-          // Check if getPlayerState method exists before calling
-          if (typeof playerRef.current.getPlayerState === 'function') {
-            const playerState = playerRef.current.getPlayerState();
-            // 1 = playing, 2 = paused, 5 = cued, -1 = unstarted
-            if (playerState !== 1 && playerState !== 3) { // 3 is buffering
-              if (typeof playerRef.current.playVideo === 'function') {
-                playerRef.current.playVideo();
-              }
-            }
-          }
-        } else {
-          if (typeof playerRef.current.pauseVideo === 'function') {
-            playerRef.current.pauseVideo();
-          }
-        }
-      } catch (error) {
-        // Player might be transitioning - ignore errors during transitions
+    if (!playerRef.current || !isReady) return;
+    
+    try {
+      if (isPlaying) {
+        playerRef.current.playVideo();
+      } else {
+        playerRef.current.pauseVideo();
       }
+    } catch (error) {
+      // Player might be transitioning - ignore errors
     }
-  }, [isPlaying, isReady, currentSong]);
+  }, [isPlaying, isReady]);
 
   const onPlayerReady = (event: YouTubeEvent) => {
     playerRef.current = event.target;
-    setIsReady(true);
+    
+    // Ensure not muted and volume is up
+    try {
+      event.target.unMute();
+      event.target.setVolume(100);
+    } catch (e) {
+      // Ignore volume errors
+    }
     
     // Get initial duration
     try {
@@ -166,39 +150,39 @@ const GlobalPlayer: React.FC = () => {
       // Duration might not be available immediately
     }
     
+    setIsReady(true);
+    
+    // Auto-play if we're supposed to be playing
     if (isPlaying) {
-      event.target.playVideo();
+      try {
+        event.target.playVideo();
+      } catch (error) {
+        // Ignore play errors
+      }
     }
   };
 
   const onPlayerStateChange = (event: YouTubeEvent) => {
-    // Make sure event.target is valid
     if (!event.target) return;
     
-    // Update local state if external factors (buffering, etc) change it?
-    // Actually, we mostly care about Ended (0) or Playing (1) / Paused (2)
+    // YouTube player states: -1 unstarted, 0 ended, 1 playing, 2 paused, 3 buffering, 5 cued
     if (event.data === 0) { // Ended
-      // Use setTimeout to avoid race conditions during player cleanup
-      setTimeout(() => {
-        nextSong();
-      }, 100);
+      nextSong();
     }
     if (event.data === 1) { // Playing
-        if (!isPlaying) setPlaying(true);
-        // Try to get duration when playing starts
-        try {
-          if (event.target && typeof event.target.getDuration === 'function') {
-            const total = event.target.getDuration();
-            if (typeof total === 'number' && !isNaN(total) && total > 0) {
-              setDuration(total);
-            }
-          }
-        } catch (error) {
-          // Duration might not be available yet
+      if (!isPlaying) setPlaying(true);
+      // Try to get duration when playing starts
+      try {
+        const total = event.target.getDuration();
+        if (typeof total === 'number' && !isNaN(total) && total > 0) {
+          setDuration(total);
         }
+      } catch (error) {
+        // Duration might not be available yet
+      }
     }
     if (event.data === 2) { // Paused
-        if (isPlaying) setPlaying(false);
+      if (isPlaying) setPlaying(false);
     }
   };
 
@@ -265,11 +249,11 @@ const GlobalPlayer: React.FC = () => {
       {/* Hidden YouTube Player */}
       <div className="fixed bottom-0 left-0 w-px h-px opacity-0 pointer-events-none overflow-hidden">
         <YouTube
+          key={currentSong.id}
           videoId={currentSong.youtubeId}
           opts={opts}
           onReady={onPlayerReady}
           onStateChange={onPlayerStateChange}
-          onEnd={() => nextSong()} // Redundant with onStateChange(0) but safe
           onError={onPlayerError}
         />
       </div>
@@ -456,4 +440,5 @@ const GlobalPlayer: React.FC = () => {
 };
 
 export default GlobalPlayer;
+
 

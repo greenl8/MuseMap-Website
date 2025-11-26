@@ -110,7 +110,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const allSongs = useMemo(() => getAllSongsChronologically(discography), []);
 
-  // Initialize or reshuffle playlist when shuffle is toggled
+  // Initialize or reshuffle playlist ONLY when shuffle is toggled (not when navigating)
   useEffect(() => {
     if (isShuffle) {
       const shuffled = shuffleArray(allSongs);
@@ -126,7 +126,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       // Clear shuffled playlist when shuffle is disabled
       setShuffledPlaylist([]);
     }
-  }, [isShuffle, allSongs, currentSong]); // Include currentSong to update index when song changes
+  }, [isShuffle, allSongs]); // Only reshuffle when shuffle toggle or allSongs changes, NOT when navigating
 
   // Update shuffle index when current song changes (if shuffle is enabled)
   useEffect(() => {
