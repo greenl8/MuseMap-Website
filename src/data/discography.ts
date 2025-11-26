@@ -510,26 +510,93 @@ export const discography: DiscographyData[] = [
       },
       {
         id: '2018-album-6',
-        title: "misc tracks",
+        title: "misc",
         artist: "truegod.space",
         coverUrl: "",
         songs: [
-          { id: '2018-truegod-misc-1', title: 'il j demo', youtubeId: 'TutMfo5owmA' },
-          { id: '2018-truegod-misc-2', title: 'computer music assessment 02 jude', youtubeId: 'Gpakcm7qkxg' },
-          { id: '2018-truegod-misc-3', title: 'full moon you', youtubeId: 'aCkyqks4kZc' },
-          { id: '2018-truegod-misc-4', title: 'fx trading', youtubeId: 'dAnf7IFO3WE' },
-          { id: '2018-truegod-misc-5', title: 'Human superego idm', youtubeId: 'lTwhxAG2ZDQ' },
-          { id: '2018-truegod-misc-6', title: 'numb month', youtubeId: 'q4yp8L6yazE' },
-          { id: '2018-truegod-misc-7', title: 'Sages', youtubeId: 'n1U58DE3MjQ' },
-          { id: '2018-truegod-misc-8', title: 'truegod space my pla', youtubeId: 'WJ15WQMv0vs' },
-          { id: '2018-truegod-misc-9', title: 'T drop phase test', youtubeId: 't1TpQUf2t_0' },
-          { id: '2018-truegod-misc-10', title: 'truegod space rico s always rong', youtubeId: '-HpYGxm-c7A' },
-          { id: '2018-truegod-misc-11', title: 'truegod space she s not on my mind', youtubeId: 'aLPF35rcMN0' },
-          { id: '2018-truegod-misc-12', title: 'truegod space shifts and sans scales', youtubeId: 'JXje_DX2z0M' },
+          { id: '2018-truegod-misc-1', title: 'best way', youtubeId: 'vyM25T4WMCg' },
+          { id: '2018-truegod-misc-2', title: 'lolzies', youtubeId: 'j_AD-Y9La1U' },
+          { id: '2018-truegod-misc-3', title: 'rico s always rong', youtubeId: 'OAHc1b7xvJI' },
+          { id: '2018-truegod-misc-4', title: 'subconscious genius', youtubeId: 'YmewEpEm4gY' },
         ]
       },
       {
         id: '2018-album-7',
+        title: "heavns.playlist",
+        artist: "truegod.space",
+        coverUrl: "",
+        songs: [
+          { id: '2018-heavns-1', title: 'truegod space sipping2', youtubeId: '1el0zVQOP6I' },
+          { id: '2018-heavns-2', title: 'truegod space sensitive 1', youtubeId: 'XDBDe9UjtC0' },
+          { id: '2018-heavns-3', title: 'truegod space leftarm comtmplate', youtubeId: 'iZw-x0250qI' },
+          { id: '2018-heavns-4', title: 'truegod space learned so much', youtubeId: 'nkvgSfWbvJ8' },
+          { id: '2018-heavns-5', title: 'truegod space land of MMCE 1', youtubeId: 'Fh8AFOf3mnA' },
+          { id: '2018-heavns-6', title: 'truegod space juicebag', youtubeId: 'nOTh-dEI4CM' },
+          { id: '2018-heavns-7', title: 'truegod space capturing memory', youtubeId: 'RceOmoCwXME' },
+          { id: '2018-heavns-8', title: 'truegod space agent hard stuff 2', youtubeId: 'PY5J2Z899Ro' },
+          { id: '2018-heavns-9', title: 'truegod space 9 to 5 world', youtubeId: 'Nby9l2rGM6E' },
+        ]
+      },
+      {
+        id: '2018-album-8',
+        title: "true.music",
+        artist: "truegod.space",
+        coverUrl: "",
+        songs: [
+          { id: '2018-truemusic-1', title: 'truegod space superego id Original Re Master', youtubeId: 's95_WB75Q28' },
+          { id: '2018-truemusic-2', title: 'truegod space sipping spikes Re Master', youtubeId: '1UbiJZ-lXww' },
+          { id: '2018-truemusic-3', title: 'truegod space camerons lounge Re Master', youtubeId: '7IPcX4F_Ob4' },
+          { id: '2018-truemusic-4', title: 'capturing memory', youtubeId: 'fM1jEQKNMug' },
+        ]
+      },
+      {
+        id: '2018-album-9',
+        title: "true.purgatory",
+        artist: "truegod.space",
+        coverUrl: "/resources/true.purgatory.jpg",
+        songs: [
+          { id: '2018-purgatory-1', title: 'truegod space jenga LS version', youtubeId: 'Rl12dVZJBXM' },
+          { id: '2018-purgatory-2', title: 'truegod space incentivised glisten 432', youtubeId: 'nSrRSNa7uL0' },
+          { id: '2018-purgatory-3', title: 'truegod space im your account manager', youtubeId: '3qdph5J3L0E' },
+          { id: '2018-purgatory-4', title: 'truegod space HS ly', youtubeId: 'LANcF9VBz-I' },
+          { id: '2018-purgatory-5', title: 'truegod space eyshda middle class', youtubeId: '6mxX9OaB0To' },
+          { id: '2018-purgatory-6', title: 'truegod space camerons lounge Re Master', youtubeId: 'wPRIq7ypSFs' },
+          { id: '2018-purgatory-7', title: 'truegod space 5TRATED', youtubeId: 'kDH_akJBi-A' },
+          { id: '2018-purgatory-8', title: 'truegod space 4ug remaster', youtubeId: 'xYRi2Kx0HDI' },
+          { id: '2018-purgatory-9', title: 'truegod space working', youtubeId: 'UN4kCEoJElU' },
+          { id: '2018-purgatory-10', title: 'truegod space superego id Original Re Master', youtubeId: '2sC-WgstPnY' },
+          { id: '2018-purgatory-11', title: 'truegod space superego id 104BPM Re Master', youtubeId: 'Jm62ssI3Nfw' },
+          { id: '2018-purgatory-12', title: 'truegod space spounk', youtubeId: 'PrQVP_mGSKM' },
+          { id: '2018-purgatory-13', title: 'truegod space sipping spikes Re Master', youtubeId: 'LPmP3g7ZiqE' },
+          { id: '2018-purgatory-14', title: 'truegod space ryth sample', youtubeId: 'd6fIV8G7ezo' },
+          { id: '2018-purgatory-15', title: 'truegod space me mumble', youtubeId: 'eBGAMCHv7Qk' },
+          { id: '2018-purgatory-16', title: 'truegod space mass etter', youtubeId: '-D52MK6X_JM' },
+          { id: '2018-purgatory-17', title: 'truegod space m sports', youtubeId: 'Fdl6HFpBX5Y' },
+          { id: '2018-purgatory-18', title: 'truegod space land of MMCE', youtubeId: 'vmXWGGOHfCw' },
+        ]
+      },
+      {
+        id: '2018-album-10',
+        title: "misc tracks (old)",
+        artist: "truegod.space",
+        coverUrl: "",
+        songs: [
+          { id: '2018-truegod-old-1', title: 'il j demo', youtubeId: 'TutMfo5owmA' },
+          { id: '2018-truegod-old-2', title: 'computer music assessment 02 jude', youtubeId: 'Gpakcm7qkxg' },
+          { id: '2018-truegod-old-3', title: 'full moon you', youtubeId: 'aCkyqks4kZc' },
+          { id: '2018-truegod-old-4', title: 'fx trading', youtubeId: 'dAnf7IFO3WE' },
+          { id: '2018-truegod-old-5', title: 'Human superego idm', youtubeId: 'lTwhxAG2ZDQ' },
+          { id: '2018-truegod-old-6', title: 'numb month', youtubeId: 'q4yp8L6yazE' },
+          { id: '2018-truegod-old-7', title: 'Sages', youtubeId: 'n1U58DE3MjQ' },
+          { id: '2018-truegod-old-8', title: 'truegod space my pla', youtubeId: 'WJ15WQMv0vs' },
+          { id: '2018-truegod-old-9', title: 'T drop phase test', youtubeId: 't1TpQUf2t_0' },
+          { id: '2018-truegod-old-10', title: 'truegod space rico s always rong', youtubeId: '-HpYGxm-c7A' },
+          { id: '2018-truegod-old-11', title: 'truegod space she s not on my mind', youtubeId: 'aLPF35rcMN0' },
+          { id: '2018-truegod-old-12', title: 'truegod space shifts and sans scales', youtubeId: 'JXje_DX2z0M' },
+        ]
+      },
+      {
+        id: '2018-album-11',
         title: "Ceste Que Vie Act 1666",
         artist: "I",
         coverUrl: "",
@@ -548,7 +615,7 @@ export const discography: DiscographyData[] = [
         ]
       },
       {
-        id: '2018-album-8',
+        id: '2018-album-12',
         title: "bedroom music (peartree) EP",
         artist: "truegod.space",
         coverUrl: "/resources/bedroom music (peartree) EP.jpg",
@@ -614,7 +681,101 @@ export const discography: DiscographyData[] = [
   {
     year: 2020,
     description: "The Lockdown Sessions",
-    albums: []
+    albums: [
+      {
+        id: '2020-album-1',
+        title: "21",
+        artist: "mind.space",
+        coverUrl: "",
+        songs: [
+          { id: '2020-21-1', title: 'humans are wankers', youtubeId: 'lPeTvJD17qs' },
+          { id: '2020-21-2', title: 'good breath#', youtubeId: 'EwTeyN7uAho' },
+          { id: '2020-21-3', title: 'feeling it', youtubeId: '8ZE9FXoIhUE' },
+          { id: '2020-21-4', title: 'eyy uyua', youtubeId: 'Ss1JZ3b8Wi4' },
+          { id: '2020-21-5', title: 'drillstep', youtubeId: 'jBEG4TyXCbg' },
+          { id: '2020-21-6', title: 'chemical love', youtubeId: 'onh5wMw9nEU' },
+          { id: '2020-21-7', title: 'braingasm', youtubeId: 'ZkEoey-Ku88' },
+          { id: '2020-21-8', title: 'office', youtubeId: 'uDPrQLqjTZs' },
+          { id: '2020-21-9', title: 'prmoxity', youtubeId: 'v7VGTVcqG84' },
+          { id: '2020-21-10', title: 'proper me#', youtubeId: 'E3_oejV6OnE' },
+          { id: '2020-21-11', title: 'rag', youtubeId: '5SAkyNejzeQ' },
+          { id: '2020-21-12', title: 'sock', youtubeId: 'HjqrIXPimiY' },
+          { id: '2020-21-13', title: 'topless', youtubeId: 'jgUyBXNi0b0' },
+          { id: '2020-21-14', title: '5 mg is better than 10', youtubeId: '_OHuszvP4MQ' },
+        ]
+      },
+      {
+        id: '2020-album-2',
+        title: "dreaming",
+        artist: "mind.space",
+        coverUrl: "",
+        songs: [
+          { id: '2020-dreaming-1', title: 'dreaming 02', youtubeId: 'zA1FY6r0OcE' },
+          { id: '2020-dreaming-2', title: 'dreaming 01', youtubeId: 'S09QgCR8yfA' },
+        ]
+      },
+      {
+        id: '2020-album-3',
+        title: "latest slits",
+        artist: "mind.space",
+        coverUrl: "",
+        songs: [
+          { id: '2020-slits-1', title: 'longer', youtubeId: 'oMLUPR5whZY' },
+          { id: '2020-slits-2', title: 'what a waste', youtubeId: 'cYZvszPojfo' },
+          { id: '2020-slits-3', title: 'what a waste diff', youtubeId: 'QEQNZNq2ifc' },
+          { id: '2020-slits-4', title: 'wex', youtubeId: 'e3eM2PIcd9I' },
+          { id: '2020-slits-5', title: 'ventin#', youtubeId: 'qP5sU45t1oE' },
+          { id: '2020-slits-6', title: 'sex on drugs', youtubeId: '2D0egz596xw' },
+          { id: '2020-slits-7', title: 'sex on drugs synthwave', youtubeId: 'EngosH4NHjg' },
+          { id: '2020-slits-8', title: 'romeo freestyle vox', youtubeId: 'ySq6bV1HHg4' },
+          { id: '2020-slits-9', title: 'one man blowjob', youtubeId: 'ls2w6ppqvrw' },
+          { id: '2020-slits-10', title: 'odmst', youtubeId: 'x1NWtZ_KdtE' },
+          { id: '2020-slits-11', title: 'mind space', youtubeId: 'EQeqIH4h8T8' },
+          { id: '2020-slits-12', title: 'incel', youtubeId: 'C7523s5EidA' },
+          { id: '2020-slits-13', title: 'hit the bag', youtubeId: 'H6x7Ag_1GEU' },
+          { id: '2020-slits-14', title: 'flac2', youtubeId: 'Plwz2YpApPc' },
+          { id: '2020-slits-15', title: 'flac1', youtubeId: 'YiPnNX0ac5k' },
+          { id: '2020-slits-16', title: 'exp 3 1 exp 4', youtubeId: '-LI97VDDpGQ' },
+          { id: '2020-slits-17', title: 'exp 3 life rn', youtubeId: 'CV4xcMGxX08' },
+          { id: '2020-slits-18', title: 'easy lover master', youtubeId: 'rgdRn7qRbSs' },
+          { id: '2020-slits-19', title: 'dr pepper', youtubeId: 'f8xbv8EfELQ' },
+          { id: '2020-slits-20', title: 'couple bars', youtubeId: 'QNDNpmGQSTI' },
+        ]
+      },
+      {
+        id: '2020-album-4',
+        title: "Misses (Outtakes) Volume 3",
+        artist: "mind.space",
+        coverUrl: "",
+        songs: [
+          { id: '2020-misses-1', title: 'wazza', youtubeId: 'EBBHWD8cguI' },
+          { id: '2020-misses-2', title: 'the unveiling', youtubeId: 'v5W4dSwIo2U' },
+          { id: '2020-misses-3', title: 'The National Anthem', youtubeId: '_45dIIGyIqw' },
+          { id: '2020-misses-4', title: 'spam x freestyle', youtubeId: '5Zo3WkbW_9Y' },
+          { id: '2020-misses-5', title: 'not so punchy', youtubeId: 'M2Pk40NvRwg' },
+          { id: '2020-misses-6', title: 'not even sundah', youtubeId: 'LIs4aHBgx7Q' },
+          { id: '2020-misses-7', title: 'no diamond chainz', youtubeId: '1IqmTMUHWLM' },
+          { id: '2020-misses-8', title: 'movey moves', youtubeId: 'eaypn9doC8A' },
+          { id: '2020-misses-9', title: 'legacy of', youtubeId: 'obPskvXsVKA' },
+          { id: '2020-misses-10', title: 'its wrid', youtubeId: 'Qap_j5wqGQ0' },
+          { id: '2020-misses-11', title: 'i smoke doobies', youtubeId: 'vhi8nqTZ94U' },
+          { id: '2020-misses-12', title: 'how can i make everyone buy my shit', youtubeId: 'NUWhyJlarZw' },
+          { id: '2020-misses-13', title: 'i smoke doobies', youtubeId: 'I-EncCOpKzM' },
+          { id: '2020-misses-14', title: 'how can i make everyone buy my shit', youtubeId: 'hFXb0EMiP7s' },
+          { id: '2020-misses-15', title: 'heart monologue', youtubeId: 'msv5lllz6Vc' },
+          { id: '2020-misses-16', title: 'headslow', youtubeId: 'TOYnppTxcHY' },
+          { id: '2020-misses-17', title: 'gassed up', youtubeId: 'EiMtPG12YXc' },
+          { id: '2020-misses-18', title: 'friday', youtubeId: '9w3zOqV7BhI' },
+          { id: '2020-misses-19', title: 'crimewatch', youtubeId: 'CiJpo-IRdI8' },
+          { id: '2020-misses-20', title: 'beck', youtubeId: '8cknsJBE_UQ' },
+          { id: '2020-misses-21', title: '12 12', youtubeId: 'RIZelSeo7f4' },
+          { id: '2020-misses-22', title: '11 11', youtubeId: 'jeaG_zYwMU4' },
+          { id: '2020-misses-23', title: '7 22', youtubeId: '137Bu85TI7s' },
+          { id: '2020-misses-24', title: '7 21 8hz area', youtubeId: 'ZRoxV01U-cU' },
+          { id: '2020-misses-25', title: '7 20', youtubeId: 'SyZHAh2_Kr4' },
+        ]
+      }
+    ]
   },
 
   // ============================================
@@ -623,7 +784,105 @@ export const discography: DiscographyData[] = [
   {
     year: 2021,
     description: "Resurgence",
-    albums: []
+    albums: [
+      {
+        id: '2021-album-1',
+        title: "you",
+        artist: "mind.space",
+        coverUrl: "",
+        songs: [
+          { id: '2021-you-1', title: 'ידיאPM rain in manchester', youtubeId: 'yHrj_78KHS4' },
+          { id: '2021-you-2', title: 'you 1709 rain in manchester', youtubeId: 'W6vMWcpEAV0' },
+          { id: '2021-you-3', title: 'you 4th scale factor 9', youtubeId: 'f1ykB0MrXaQ' },
+          { id: '2021-you-4', title: 'you divine scales', youtubeId: 'O4zQSoI0WQU' },
+          { id: '2021-you-5', title: 'you earth scales', youtubeId: 'KE35CR6fcew' },
+          { id: '2021-you-6', title: 'you mystery scales', youtubeId: '-Ks-uVjnnBU' },
+          { id: '2021-you-7', title: 'you natural scale with harmonics', youtubeId: 'GK1u1q3K5jQ' },
+          { id: '2021-you-8', title: 'you natural style pad', youtubeId: 'ovptUEmwzjM' },
+          { id: '2021-you-9', title: 'you synchro scales', youtubeId: 'YhR2Zoek6c4' },
+        ]
+      },
+      {
+        id: '2021-album-2',
+        title: "misc",
+        artist: "mind.space",
+        coverUrl: "",
+        songs: [
+          { id: '2021-misc-1', title: 'dem 2#', youtubeId: 'yY_q7dMJmKg' },
+          { id: '2021-misc-2', title: 'my s', youtubeId: 'KI14ZdWGqGY' },
+          { id: '2021-misc-3', title: 'she wants up', youtubeId: 'SyVFatjA7Do' },
+          { id: '2021-misc-4', title: 'you nekonečno', youtubeId: 'gw6LTtsljEw' },
+          { id: '2021-misc-5', title: 'you ateh salem', youtubeId: 'C0PjuX9ac8w' },
+          { id: '2021-misc-6', title: 'reality', youtubeId: '9QQq9_8HEo4' },
+          { id: '2021-misc-7', title: 'no good for me mind space remix', youtubeId: 'sq4fhKVrlzw' },
+          { id: '2021-misc-8', title: 'mind space XXI', youtubeId: 'GhcPm4b4VG4' },
+          { id: '2021-misc-9', title: 'mind space us', youtubeId: 'L-g6zKkHQj8' },
+          { id: '2021-misc-10', title: 'mind space i got your message', youtubeId: 'ssc5nxcYuv4' },
+          { id: '2021-misc-11', title: 'hold call', youtubeId: 's8MUeX8ubuw' },
+          { id: '2021-misc-12', title: '2 sides backup', youtubeId: 'Dm11zA_2WDc' },
+          { id: '2021-misc-13', title: 'you you love', youtubeId: 'F-tQDRb51C0' },
+          { id: '2021-misc-14', title: 'you what can i learn what can i teach you', youtubeId: '7-b3jMhmAT4' },
+          { id: '2021-misc-15', title: 'you surveillance', youtubeId: 'BgWrlJ8H3VI' },
+          { id: '2021-misc-16', title: 'you significator', youtubeId: '-O7xVYzP1UM' },
+          { id: '2021-misc-17', title: 'you short wave', youtubeId: 'PJCgeK53ybQ' },
+          { id: '2021-misc-18', title: 'you fakehub', youtubeId: 'u1y_gCEDTsA' },
+        ]
+      },
+      {
+        id: '2021-album-3',
+        title: "Default Simulations",
+        artist: "mind.space",
+        coverUrl: "",
+        songs: [
+          { id: '2021-default-1', title: 'thought bubbles release grace note rama', youtubeId: '_qT3FDh-Hm8' },
+          { id: '2021-default-2', title: 'projection mall', youtubeId: 'aSdKgKZQ9Tw' },
+          { id: '2021-default-3', title: 'default sim', youtubeId: 'FDErqZJBDPY' },
+        ]
+      },
+      {
+        id: '2021-album-4',
+        title: "Something Else",
+        artist: "mind.space",
+        coverUrl: "",
+        songs: [
+          { id: '2021-something-1', title: 'grass', youtubeId: 'txCUwjt4PvQ' },
+          { id: '2021-something-2', title: 'juice', youtubeId: 'L-yuSNP-UZY' },
+        ]
+      },
+      {
+        id: '2021-album-5',
+        title: "My Maker",
+        artist: "mind.space",
+        coverUrl: "",
+        songs: [
+          { id: '2021-maker-1', title: 'new room', youtubeId: 'e6lOz6RAjV8' },
+          { id: '2021-maker-2', title: 'pop up belief systems', youtubeId: 'AiFERahFEMM' },
+          { id: '2021-maker-3', title: 'teles cheap', youtubeId: 'rSlfSXtfX9M' },
+          { id: '2021-maker-4', title: 'superego 3', youtubeId: 'NwiDcCuBzSg' },
+          { id: '2021-maker-5', title: 'target top player', youtubeId: 'EkgnNc2KiRs' },
+        ]
+      },
+      {
+        id: '2021-album-6',
+        title: "mashup business",
+        artist: "mashup business",
+        coverUrl: "",
+        songs: [
+          { id: '2021-mashup-1', title: 'drillin off mashup', youtubeId: '_i8Z5VMAoi8' },
+          { id: '2021-mashup-2', title: 'respawn mashup', youtubeId: 'BJFDs4wpef4' },
+        ]
+      },
+      {
+        id: '2021-album-7',
+        title: "Delta",
+        artist: "mind.space",
+        coverUrl: "",
+        songs: [
+          { id: '2021-delta-1', title: 'glatch', youtubeId: '4IROZOJnMj4' },
+          { id: '2021-delta-2', title: 'MK mind voice', youtubeId: 'ia-1EOfsdZM' },
+        ]
+      }
+    ]
   },
 
   // ============================================
@@ -641,7 +900,17 @@ export const discography: DiscographyData[] = [
   {
     year: 2023,
     description: "Refinement",
-    albums: []
+    albums: [
+      {
+        id: '2023-album-1',
+        title: "misc",
+        artist: "mind.space",
+        coverUrl: "",
+        songs: [
+          { id: '2023-misc-1', title: 'cheap cake 02 08', youtubeId: 'sF1IIWLhlXI' },
+        ]
+      }
+    ]
   },
 
   // ============================================
@@ -650,7 +919,17 @@ export const discography: DiscographyData[] = [
   {
     year: 2024,
     description: "Current Era",
-    albums: []
+    albums: [
+      {
+        id: '2024-album-1',
+        title: "misc",
+        artist: "mind.space",
+        coverUrl: "",
+        songs: [
+          { id: '2024-misc-1', title: 'cheap cake udio remix 1', youtubeId: 'tOzoWSQkvlQ' },
+        ]
+      }
+    ]
   },
 
   // ============================================
