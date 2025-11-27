@@ -291,7 +291,7 @@ const GlobalPlayer: React.FC = () => {
             <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-lg overflow-hidden flex-shrink-0 border border-white/10">
               {currentAlbum?.coverUrl ? (
                 <img 
-                  src={currentAlbum.coverUrl} 
+                  src={`${import.meta.env.BASE_URL}${currentAlbum.coverUrl.replace(/^\//, '')}`} 
                   alt={currentAlbum.title} 
                   className={`w-full h-full object-cover ${isPlaying ? 'animate-pulse-slow' : ''}`} 
                 />

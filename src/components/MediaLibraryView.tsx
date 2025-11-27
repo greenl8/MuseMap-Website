@@ -80,7 +80,7 @@ const MediaLibraryView: React.FC<Props> = ({ media, year, onBack }) => {
                 onClick={() => setSelectedImage(image)}
               >
                 <img
-                  src={image.url}
+                  src={`${import.meta.env.BASE_URL}${image.url.replace(/^\//, '')}`}
                   alt={image.title}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
@@ -192,7 +192,7 @@ const MediaLibraryView: React.FC<Props> = ({ media, year, onBack }) => {
               onClick={(e) => e.stopPropagation()}
             >
               <img
-                src={selectedImage.url}
+                src={`${import.meta.env.BASE_URL}${selectedImage.url.replace(/^\//, '')}`}
                 alt={selectedImage.title}
                 className="max-w-full max-h-[90vh] object-contain rounded-lg"
               />

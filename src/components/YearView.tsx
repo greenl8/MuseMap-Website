@@ -283,7 +283,7 @@ const AlbumView: React.FC<{
         <div 
           className="absolute inset-0 opacity-10 pointer-events-none z-0"
           style={{
-            backgroundImage: `url(${album.coverUrl})`,
+            backgroundImage: `url(${import.meta.env.BASE_URL}${album.coverUrl.replace(/^\//, '')})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             filter: 'blur(60px)',

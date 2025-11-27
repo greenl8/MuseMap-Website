@@ -133,7 +133,7 @@ const AlbumNode: React.FC<{
           }}
         >
           {album.coverUrl ? (
-            <img src={album.coverUrl} alt={album.title} className="w-full h-full object-cover" />
+            <img src={`${import.meta.env.BASE_URL}${album.coverUrl.replace(/^\//, '')}`} alt={album.title} className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full bg-slate-800 flex items-center justify-center">
                <span className="text-2xl">🎵</span>
