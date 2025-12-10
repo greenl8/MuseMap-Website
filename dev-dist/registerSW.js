@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/MuseMap-Website/dev-sw.js?dev-sw', { scope: '/MuseMap-Website/', type: 'classic' })

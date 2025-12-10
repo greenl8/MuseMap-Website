@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import YouTube from 'react-youtube';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../context/PlayerContext';
+import { useBackgroundAudio } from '../hooks/useBackgroundAudio';
 import NoiseFieldVisualizer from './NoiseFieldVisualizer';
 import BarsVisualizer from './BarsVisualizer';
 
@@ -41,6 +42,48 @@ const GlobalPlayer: React.FC = () => {
   const [selectedVisualizer, setSelectedVisualizer] = useState<'noise' | 'bars'>('noise');
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  // Seek handlers for Media Session
+  const handleSeekBackward = useCallback(() => {
+    if (!playerRef.current || !isReady) return;
+    try {
+      const current = playerRef.current.getCurrentTime() || 0;
+      playerRef.current.seekTo(Math.max(0, current - 10), true);
+    } catch (e) {
+      // Ignore seek errors
+    }
+  }, [isReady]);
+
+  const handleSeekForward = useCallback(() => {
+    if (!playerRef.current || !isReady) return;
+    try {
+      const current = playerRef.current.getCurrentTime() || 0;
+      const total = playerRef.current.getDuration() || 0;
+      playerRef.current.seekTo(Math.min(total, current + 10), true);
+    } catch (e) {
+      // Ignore seek errors
+    }
+  }, [isReady]);
+
+  // Build artwork URL for media session
+  const artworkUrl = currentAlbum?.coverUrl 
+    ? `${window.location.origin}${import.meta.env.BASE_URL}${currentAlbum.coverUrl.replace(/^\//, '')}`
+    : undefined;
+
+  // Enable background audio playback and lock screen controls
+  useBackgroundAudio({
+    title: currentSong?.title || '',
+    artist: currentAlbum?.artist || 'Artist',
+    album: currentAlbum?.title || '',
+    artwork: artworkUrl,
+    isPlaying,
+    onPlay: togglePlay,
+    onPause: togglePlay,
+    onNext: nextSong,
+    onPrev: prevSong,
+    onSeekBackward: handleSeekBackward,
+    onSeekForward: handleSeekForward,
+  });
 
   // YouTube Player Options
   const opts: YouTubeOpts = {
