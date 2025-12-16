@@ -463,10 +463,16 @@ const SpiderDiagramContent: React.FC<{ data: DiscographyData[]; onYearSelect: (y
         
         {/* Central Artist Node - Creative Design */}
         <motion.div 
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 cursor-pointer"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", damping: 15, stiffness: 200 }}
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open('https://www.youtube.com/@greenl8243', '_blank', 'noopener,noreferrer');
+          }}
         >
           <div className="relative">
             {/* Outer glow rings - Hide on mobile */}
@@ -481,7 +487,7 @@ const SpiderDiagramContent: React.FC<{ data: DiscographyData[]; onYearSelect: (y
             )}
             
             {/* Main node */}
-            <div className="relative w-40 h-40 rounded-full flex items-center justify-center overflow-hidden"
+            <div className="relative w-40 h-40 rounded-full flex items-center justify-center overflow-hidden transition-all duration-200 hover:shadow-[0_0_60px_rgba(168,85,247,0.8)]"
               style={{
                 background: 'linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%)',
                 boxShadow: isMobile ? 'none' : '0 0 40px rgba(168, 85, 247, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.1)',
